@@ -1,0 +1,546 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelModal.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\SpinWheelModal.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheel.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\SpinWheel.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\ResultDisplay.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\ResultDisplay.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Home.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\Home.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Epic3DSpinWheel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Epic3DSpinWheel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\BrandDetailsPage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\BrandDetailsPage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\VoucherDetails.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\VoucherDetails.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\CategoryBrandRow.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\CategoryBrandRow.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Cart.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\Cart.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\BrandCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandsPageSkeleton.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\BrandsPageSkeleton.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\AppData\\Local\\Temp\\4d6d144e-e664-4304-a1de-2c9259c7dd69_files (5).zip.d69\\BrandCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\FilterSidebar.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\FilterSidebar.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Orders.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\Orders.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\VoucherCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\VoucherCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\TopBrandsSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\TopBrandsSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\PromoCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\PromoCard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\HotDealsSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\HotDealsSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Hero.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Hero.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Header.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Header.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Footer.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Footer.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Brands.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\Brands.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\App.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\App.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelWrapper.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\SpinWheelWrapper.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\SpinWheelSection.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\tailwind.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:tailwind.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\index.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\index.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\lib\\utils.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\lib\\utils.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\SpinWheelPage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\SpinWheelPage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CategoryBrandRow.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\CategoryBrandRow.tsx",
+              "RelativeDocumentMoniker": "src\\components\\CategoryBrandRow.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\CategoryBrandRow.tsx",
+              "RelativeToolTip": "src\\components\\CategoryBrandRow.tsx",
+              "ViewState": "AQIAAGEAAAAAAAAAAAAAAHMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:36:55.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "VoucherDetails.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\VoucherDetails.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\VoucherDetails.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\VoucherDetails.tsx",
+              "RelativeToolTip": "src\\pages\\VoucherDetails.tsx",
+              "ViewState": "AQIAAKcAAAAAAAAAAAAAALUAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:37:58.672Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BrandDetailsPage.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\BrandDetailsPage.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\BrandDetailsPage.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\BrandDetailsPage.tsx",
+              "RelativeToolTip": "src\\pages\\BrandDetailsPage.tsx",
+              "ViewState": "AQIAAJ4CAAAAAAAAAAAAAKwCAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T17:31:03.463Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SpinWheel.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheel.tsx",
+              "RelativeDocumentMoniker": "src\\components\\SpinWheel.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheel.tsx",
+              "RelativeToolTip": "src\\components\\SpinWheel.tsx",
+              "ViewState": "AQIAAOkAAAAAAAAAAAAAAPsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:06:43.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SpinWheelModal.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelModal.tsx",
+              "RelativeDocumentMoniker": "src\\components\\SpinWheelModal.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelModal.tsx",
+              "RelativeToolTip": "src\\components\\SpinWheelModal.tsx",
+              "ViewState": "AQIAAMwAAAAAAAAAAAAAAN4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:38:42.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ResultDisplay.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\ResultDisplay.tsx",
+              "RelativeDocumentMoniker": "src\\components\\ResultDisplay.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\ResultDisplay.tsx",
+              "RelativeToolTip": "src\\components\\ResultDisplay.tsx",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAEAAAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:43:54.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Cart.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Cart.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\Cart.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Cart.tsx",
+              "RelativeToolTip": "src\\pages\\Cart.tsx",
+              "ViewState": "AQIAANYBAAAAAAAAAAAAAOgBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:38:14.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Epic3DSpinWheel.jsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Epic3DSpinWheel.jsx",
+              "RelativeDocumentMoniker": "src\\components\\Epic3DSpinWheel.jsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Epic3DSpinWheel.jsx",
+              "RelativeToolTip": "src\\components\\Epic3DSpinWheel.jsx",
+              "ViewState": "AQIAAPUAAAAAAAAAAAAAAAcBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2025-12-05T18:14:20.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Home.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Home.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\Home.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Home.tsx",
+              "RelativeToolTip": "src\\pages\\Home.tsx",
+              "ViewState": "AQIAACwAAAAAAAAAAAAAAD4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T17:31:08.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BrandCard.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandCard.tsx",
+              "RelativeDocumentMoniker": "src\\components\\BrandCard.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandCard.tsx",
+              "RelativeToolTip": "src\\components\\BrandCard.tsx",
+              "ViewState": "AQIAAIAAAAAAAAAAAAAAAJIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:25:10.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "BrandsPageSkeleton.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandsPageSkeleton.tsx",
+              "RelativeDocumentMoniker": "src\\components\\BrandsPageSkeleton.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\BrandsPageSkeleton.tsx",
+              "RelativeToolTip": "src\\components\\BrandsPageSkeleton.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:49:35.026Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "BrandCard.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\AppData\\Local\\Temp\\4d6d144e-e664-4304-a1de-2c9259c7dd69_files (5).zip.d69\\BrandCard.tsx",
+              "RelativeDocumentMoniker": "..\\..\\AppData\\Local\\Temp\\4d6d144e-e664-4304-a1de-2c9259c7dd69_files (5).zip.d69\\BrandCard.tsx",
+              "ToolTip": "C:\\Users\\shubh\\AppData\\Local\\Temp\\4d6d144e-e664-4304-a1de-2c9259c7dd69_files (5).zip.d69\\BrandCard.tsx",
+              "RelativeToolTip": "..\\..\\AppData\\Local\\Temp\\4d6d144e-e664-4304-a1de-2c9259c7dd69_files (5).zip.d69\\BrandCard.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:49:27.47Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FilterSidebar.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\FilterSidebar.tsx",
+              "RelativeDocumentMoniker": "src\\components\\FilterSidebar.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\FilterSidebar.tsx",
+              "RelativeToolTip": "src\\components\\FilterSidebar.tsx",
+              "ViewState": "AQIAAMUAAAAAAAAAAAAAANcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:37:06.441Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Orders.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Orders.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\Orders.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Orders.tsx",
+              "RelativeToolTip": "src\\pages\\Orders.tsx",
+              "ViewState": "AQIAAE4BAAAAAAAAAAAAAGABAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:38:36.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "PromoCard.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\PromoCard.tsx",
+              "RelativeDocumentMoniker": "src\\components\\PromoCard.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\PromoCard.tsx",
+              "RelativeToolTip": "src\\components\\PromoCard.tsx",
+              "ViewState": "AQIAABcAAAAAAAAAAAAAACkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:26:01.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Hero.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Hero.tsx",
+              "RelativeDocumentMoniker": "src\\components\\Hero.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Hero.tsx",
+              "RelativeToolTip": "src\\components\\Hero.tsx",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAAAFkAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:25:29.523Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "HotDealsSection.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\HotDealsSection.tsx",
+              "RelativeDocumentMoniker": "src\\components\\HotDealsSection.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\HotDealsSection.tsx",
+              "RelativeToolTip": "src\\components\\HotDealsSection.tsx",
+              "ViewState": "AQIAAMcAAAAAAAAAAAAAANQAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:35:06.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "TopBrandsSection.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\TopBrandsSection.tsx",
+              "RelativeDocumentMoniker": "src\\components\\TopBrandsSection.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\TopBrandsSection.tsx",
+              "RelativeToolTip": "src\\components\\TopBrandsSection.tsx",
+              "ViewState": "AQIAAGUAAAAAAAAAAAAAAHcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:25:50.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Header.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Header.tsx",
+              "RelativeDocumentMoniker": "src\\components\\Header.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Header.tsx",
+              "RelativeToolTip": "src\\components\\Header.tsx",
+              "ViewState": "AQIAAIkBAAAAAAAAAAAAAJUBAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:13:03.663Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "VoucherCard.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\VoucherCard.tsx",
+              "RelativeDocumentMoniker": "src\\components\\VoucherCard.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\VoucherCard.tsx",
+              "RelativeToolTip": "src\\components\\VoucherCard.tsx",
+              "ViewState": "AQIAAFMAAAAAAAAAAAAAAF4AAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:25:20.853Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Footer.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Footer.tsx",
+              "RelativeDocumentMoniker": "src\\components\\Footer.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\Footer.tsx",
+              "RelativeToolTip": "src\\components\\Footer.tsx",
+              "ViewState": "AQIAABAAAAAAAAAAAAAAAB4AAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:26:10.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Brands.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Brands.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\Brands.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\Brands.tsx",
+              "RelativeToolTip": "src\\pages\\Brands.tsx",
+              "ViewState": "AQIAAOwBAAAAAAAAAAAAAP4BAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:14:28.187Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "App.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\App.tsx",
+              "RelativeDocumentMoniker": "src\\App.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\App.tsx",
+              "RelativeToolTip": "src\\App.tsx",
+              "ViewState": "AQIAADAAAAAAAAAAAAAAAEIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T21:12:04.943Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "tailwind.config.ts",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\tailwind.config.ts",
+              "RelativeDocumentMoniker": "tailwind.config.ts",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\tailwind.config.ts",
+              "RelativeToolTip": "tailwind.config.ts",
+              "ViewState": "AQIAADYAAAAAAAAAAAAAAEgAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:13:58.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "main.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\main.tsx",
+              "RelativeDocumentMoniker": "src\\main.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\main.tsx",
+              "RelativeToolTip": "src\\main.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:15:11.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "utils.ts",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\lib\\utils.ts",
+              "RelativeDocumentMoniker": "src\\lib\\utils.ts",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\lib\\utils.ts",
+              "RelativeToolTip": "src\\lib\\utils.ts",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:08:28.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "SpinWheelWrapper.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelWrapper.tsx",
+              "RelativeDocumentMoniker": "src\\components\\SpinWheelWrapper.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelWrapper.tsx",
+              "RelativeToolTip": "src\\components\\SpinWheelWrapper.tsx",
+              "ViewState": "AQIAABYAAAAAAAAAAAAAAB8AAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T19:04:26.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\index.html",
+              "RelativeDocumentMoniker": "index.html",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\index.html",
+              "RelativeToolTip": "index.html",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAACAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-12-05T19:03:57.684Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "index.css",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\index.css",
+              "RelativeDocumentMoniker": "src\\index.css",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\index.css",
+              "RelativeToolTip": "src\\index.css",
+              "ViewState": "AQIAADwBAAAAAAAAAAAAwE8BAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-05T19:03:28.486Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "SpinWheelSection.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelSection.tsx",
+              "RelativeDocumentMoniker": "src\\components\\SpinWheelSection.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\components\\SpinWheelSection.tsx",
+              "RelativeToolTip": "src\\components\\SpinWheelSection.tsx",
+              "ViewState": "AQIAAF8AAAAAAAAAAAAAAHQAAAA8AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T17:46:51.152Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "SpinWheelPage.tsx",
+              "DocumentMoniker": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\SpinWheelPage.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\SpinWheelPage.tsx",
+              "ToolTip": "C:\\Users\\shubh\\Downloads\\Gift_Varun\\src\\pages\\SpinWheelPage.tsx",
+              "RelativeToolTip": "src\\pages\\SpinWheelPage.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-12-05T17:49:45.091Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

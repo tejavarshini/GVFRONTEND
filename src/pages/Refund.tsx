@@ -24,7 +24,7 @@ export default function Refund() {
             <section>
               <h2 className="text-2xl font-semibold mb-3">1. General Refund Principles</h2>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                <li>Refunds are governed by RBI PPI rules and SabbPe internal policies.</li>
+                <li>Refunds are governed by RBI PPI rules and Gift360 internal policies.</li>
                 <li>Refunds are provided only in exceptional cases.</li>
                 <li>Once a voucher is issued/activated, a refund is generally not possible unless mandated by law.</li>
               </ul>
@@ -76,7 +76,7 @@ export default function Refund() {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Step 2: Review & Approval</h3>
                   <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                    <li>SabbPe team reviews the request within 5-7 business days.</li>
+                    <li>Gift360 team reviews the request within 5-7 business days.</li>
                     <li>Users may be asked to provide additional information or documentation.</li>
                   </ul>
                 </div>
@@ -95,7 +95,7 @@ export default function Refund() {
               <h2 className="text-2xl font-semibold mb-3">5. Cancellation Policy</h2>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
                 <li>Orders can only be cancelled before voucher generation/activation.</li>
-                <li>Post-activation, cancellation is not possible unless there's a technical error on SabbPe's end.</li>
+                <li>Post-activation, cancellation is not possible unless there's a technical error on Gift360's end.</li>
                 <li>For bulk orders, cancellation must be requested within 24 hours of order placement.</li>
               </ul>
             </section>
@@ -104,7 +104,7 @@ export default function Refund() {
               <h2 className="text-2xl font-semibold mb-3">6. Contact for Refund Queries</h2>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-gray-700 mb-2">
-                  <strong>Email:</strong> support@sabbpe.com
+                  <strong>Email:</strong> support@gift360.io
                 </p>
                 {/* <p className="text-gray-700 mb-2">
                   <strong>Phone:</strong> +91-XXXXXXXXXX
@@ -118,7 +118,7 @@ export default function Refund() {
             <section>
               <h2 className="text-2xl font-semibold mb-3">7. Important Notes</h2>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                <li>SabbPe reserves the right to reject refund requests that don't meet eligibility criteria.</li>
+                <li>Gift360 reserves the right to reject refund requests that don't meet eligibility criteria.</li>
                 <li>This policy is subject to change; users will be notified of updates via email or platform notifications.</li>
                 <li>For disputes, users can escalate to regulatory authorities as per RBI PPI guidelines.</li>
               </ul>

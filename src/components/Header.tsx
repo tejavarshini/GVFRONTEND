@@ -205,17 +205,17 @@ export default function Header() {
   return (
     <>
       {/* HEADER */}
-      <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur border-b">
+      <header className="sticky top-2 z-50 w-full bg-background/95 backdrop-blur border-b pb-1 sm:pb-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2">
+          <div className="flex items-center justify-between h-16 sm:h-16 lg:h-20 gap-2">
             {/* LOGO - FIXED: Responsive sizing */}
             {headerConfig.logo.enabled && (
               <Link href="/">
-                <button className="flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-accent/50 transition">
+                <button className="flex items-center gap-2 px-1 sm:px-2 py-2 rounded-lg hover:bg-accent/50 transition">
                   <img
                     src={logoImg}
                     alt="Logo"
-                    className="h-10 sm:h-12 lg:h-16"
+                    className="h-16 sm:h-16 lg:h-23"
                   />
                 </button>
               </Link>
@@ -493,8 +493,8 @@ export default function Header() {
               {/* MOBILE MENU */}
               <Sheet>
                 <SheetTrigger asChild className="md:hidden">
-                  <Button size="icon" variant="ghost" className="h-9 w-9">
-                    <Menu className="h-5 w-5" />
+                  <Button size="icon" variant="ghost" className="h-7 w-7">
+                    <Menu className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
 
@@ -503,7 +503,7 @@ export default function Header() {
                   className="w-72 px-6 py-8 flex flex-col"
                 >
                   <div className="flex items-center gap-3 mb-6">
-                    <img src={logoImg} alt="Logo" className="h-10" />
+                    <img src={logoImg} alt="Logo" className="h-15 w-auto" />
                     <span className="text-xl font-bold">GiftVault</span>
                   </div>
 

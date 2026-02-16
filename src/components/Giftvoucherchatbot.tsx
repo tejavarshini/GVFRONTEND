@@ -54,7 +54,7 @@ const GiftVoucherChatbot: React.FC = () => {
             const welcomeMessage: Message = {
                 id: Date.now().toString(),
                 type: 'bot',
-                content: `👋 **Welcome to SabbPe Gift Voucher Support!**
+                content: `👋 **Welcome to Gift360 Support!**
 
 I'm here to help you with everything related to gift vouchers!
 
@@ -154,7 +154,7 @@ I'm here to help you with everything related to gift vouchers!
    • Purchase date
 
 **💻 Method 2: SabbPe Website**
-1. Visit www.sabbpe.com
+1. Visit www.gift360.io
 2. Log in to your account
 3. Go to **"My Account"** → **"My Vouchers"**
 4. View complete voucher history
@@ -192,7 +192,7 @@ Possible reasons:
 
 **Need Help?**
 If you still can't see your vouchers:
-📧 Email: support@sabbpe.com (with order ID)
+📧 Email: support@gift360.io (with order ID)
 📞 Phone: +91-9876543210
 💬 WhatsApp: +91-9876543210
 
@@ -204,7 +204,7 @@ We can resend vouchers or check order status!`,
         // Brand availability queries
         if (q.includes('brand') || q.includes('available') || q.includes('which') && (q.includes('voucher') || q.includes('card'))) {
             return {
-                content: `**Available Brands on SabbPe:**
+                content: `**Available Brands on Gift360:**
 
 We offer gift vouchers for **500+ brands** across multiple categories:
 
@@ -242,7 +242,7 @@ Would you like information about any specific brand or category?`,
         // Amazon specific
         if (q.includes('amazon')) {
             return {
-                content: `**Amazon Gift Vouchers on SabbPe:**
+                content: `**Amazon Gift Vouchers on Gift360:**
 
 **Available Variants:**
 • Amazon Pay
@@ -259,7 +259,7 @@ Would you like information about any specific brand or category?`,
 
 **For Corporate Orders:**
 Contact our B2B team for approval process:
-📧 B2B@sabbpe.com
+📧 B2B@gift360.io
 📞 +91-8765432109
 ⏱️ Approval timeline: 24-48 hours
 
@@ -281,7 +281,7 @@ Contact our B2B team for approval process:
 • **Approval Required:** Prior approval needed from Flipkart
 
 **For Bulk/Corporate Orders:**
-📧 B2B@sabbpe.com
+📧 B2B@gift360.io
 📞 +91-8765432109
 
 **Features:**
@@ -318,7 +318,7 @@ All Reliance brands share a **combined monthly limit of ₹25,000 per customer**
 **Requirements:**
 • Prior approval from Reliance required
 • Approval timeline: 24-48 hours
-• Contact B2B team: B2B@sabbpe.com | +91-8765432109
+• Contact B2B team: B2B@gift360.io | +91-8765432109
 
 **Denominations:** Varies by brand, typically ₹500 to ₹10,000`,
                 actions: ['How does shared limit work?', 'Other brands', 'Get approval', 'Corporate orders']
@@ -338,7 +338,7 @@ All Reliance brands share a **combined monthly limit of ₹25,000 per customer**
 • Approval timeline: 24-48 hours
 
 **For Corporate Orders:**
-📧 B2B@sabbpe.com
+📧 B2B@gift360.io
 📞 +91-8765432109
 
 **Features:**
@@ -443,7 +443,7 @@ If balance doesn't update or shows incorrect:
 
 **Process:**
 1. **Contact B2B Team:**
-   📧 B2B@sabbpe.com
+   📧 B2B@gift360.io
    📞 +91-8765432109
 
 2. **Share Requirements:**
@@ -537,7 +537,7 @@ Create a support ticket and our team will help resolve within 4-6 hours!`,
 **⚠️ Immediate Action Required:**
 
 1. **Report Immediately:**
-   📧 support@sabbpe.com
+   📧 support@gift360.io
    📞 +91-9876543210
    💬 WhatsApp: +91-9876543210
 
@@ -594,7 +594,7 @@ Create a support ticket and our team will help resolve within 4-6 hours!`,
 • Shipping charges may apply
 
 **🔄 Refund Process:**
-1. Email: support@sabbpe.com
+1. Email: support@gift360.io
 2. Provide order ID and reason
 3. Include proof if card is damaged/defective
 4. Our team reviews within 24 hours
@@ -671,12 +671,12 @@ Use it now or gift it to someone!`,
         }
 
         // About SabbPe / Platform
-        if (q.includes('sabbpe') || q.includes('what') && q.includes('platform') || q.includes('about') || q.includes('how') && q.includes('work')) {
+        if (q.includes('gift360') || q.includes('what') && q.includes('platform') || q.includes('about') || q.includes('how') && q.includes('work')) {
             return {
-                content: `**About SabbPe - Gift Voucher Platform:**
+                content: `**About Gift360 Voucher Platform:**
 
 **Who We Are:**
-SabbPe is India's leading **B2B gift voucher aggregator platform** connecting businesses with 500+ top brands.
+Gift360 is India's leading **B2B gift voucher aggregator platform** connecting businesses with 500+ top brands.
 
 **What We Do:**
 🎁 Provide gift vouchers for 500+ brands
@@ -685,7 +685,7 @@ SabbPe is India's leading **B2B gift voucher aggregator platform** connecting bu
 🤝 Support channel partner incentives
 🎊 Facilitate bulk gifting solutions
 
-**Why Choose SabbPe:**
+**Why Choose Gift360:**
 
 **For Businesses:**
 ✓ Single platform for all brands
@@ -715,9 +715,9 @@ SabbPe is India's leading **B2B gift voucher aggregator platform** connecting bu
 E-commerce, Fashion, Food, Electronics, Groceries, Beauty, Entertainment, Travel, and more!
 
 **Contact:**
-📧 support@sabbpe.com
+📧 support@gift360.io
 📞 +91-9876543210 (Customer support)
-💼 B2B@sabbpe.com (Corporate sales)`,
+💼 B2B@gift360.io (Corporate sales)`,
                 actions: ['Browse brands', 'Corporate solutions', 'How to redeem?', 'Purchase vouchers']
             };
         }
@@ -743,7 +743,7 @@ Some premium brands **cannot offer discounts** due to brand policies:
 • **Loyalty programs:** Rewards for repeat customers
 
 **For Corporate Clients:**
-📧 Contact B2B@sabbpe.com for:
+📧 Contact B2B@gift360.io for:
 • Volume discount quotes
 • Flexible payment terms
 • Custom pricing for large orders
@@ -787,7 +787,7 @@ Example: ₹1,000 voucher = ₹1,000 shopping value`,
 **How to Purchase:**
 
 **For Individual Orders:**
-1. Visit SabbPe website/app
+1. Visit Gift360 website/app
 2. Browse brands
 3. Select denomination
 4. Add to cart
@@ -814,7 +814,7 @@ Example: ₹1,000 voucher = ₹1,000 shopping value`,
 • Verify OTP
 • Try different method
 • Contact your bank
-• Reach out to us: support@sabbpe.com`,
+• Reach out to us: support@gift360.io`,
                 actions: ['Purchase now', 'Corporate orders', 'Available brands', 'Security info']
             };
         }
@@ -856,7 +856,7 @@ During checkout:
 
 **💼 Corporate Gifting:**
 For bulk gifting to employees/clients:
-📧 B2B@sabbpe.com
+📧 B2B@gift360.io
 📞 +91-8765432109
 
 Options include:
@@ -899,7 +899,7 @@ Consider packaging for:
 
 **✅ Good News - No Activation Required!**
 
-Most gift vouchers on SabbPe are **pre-activated** and ready to use immediately upon receipt!
+Most gift vouchers on Gift360 are **pre-activated** and ready to use immediately upon receipt!
 
 **For Digital Vouchers:**
 • Activated as soon as you receive the email
@@ -953,7 +953,7 @@ Possible reasons:
    • Contact brand customer care
 
 **Need Activation Help?**
-📧 support@sabbpe.com
+📧 support@gift360.io
 📞 +91-9876543210
 
 Include:
@@ -1075,14 +1075,14 @@ Unclear about a specific brand's policy?`,
 **For Physical Cards:**
 • Delivery time: **2-3 business days**
 • Track via:
-  1. SabbPe app → "My Orders"
+  1. Gift360 app → "My Orders"
   2. Email tracking link
   3. SMS updates to registered mobile
 
 **📋 View Order History:**
 
 **In App/Website:**
-1. Log in to SabbPe account
+1. Log in to Gift360 account
 2. Go to **"My Orders"** or **"Order History"**
 3. See all past purchases with:
    • Order ID
@@ -1121,7 +1121,7 @@ Unclear about a specific brand's policy?`,
 5. Reach out to our support
 
 **Need Help?**
-📧 support@sabbpe.com (include order ID)
+📧 support@gift360.io (include order ID)
 📞 +91-9876543210
 💬 WhatsApp: +91-9876543210
 
@@ -1146,7 +1146,7 @@ Based on your question, here are some topics I can assist you with:
 
 **Quick Actions:**
 • Create support ticket for complex issues
-• Talk to our team: support@sabbpe.com | +91-9876543210
+• Talk to our team: support@gift360.io | +91-9876543210
 
 Could you please clarify what you'd like to know? Or choose one of the suggested topics below!`,
             actions: ['Available brands', 'How to redeem?', 'Check balance', 'Corporate orders', 'Create ticket']
@@ -1248,7 +1248,7 @@ Is there anything else I can help you with?`,
                         <Bot className="w-5 h-5" />
                     </div>
                     <div>
-                        <h3 className="font-semibold text-base">SabbPe Assistant</h3>
+                        <h3 className="font-semibold text-base">Gift360 Assistant</h3>
                         <div className="flex items-center gap-1.5 text-xs text-white/90">
                             <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                             <span className='text-[10px]'>Online</span>
@@ -1487,7 +1487,7 @@ Is there anything else I can help you with?`,
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Mail className="w-4 h-4" />
-                                            <span>support@sabbpe.com</span>
+                                            <span>support@gift360.io</span>
                                         </div>
                                     </div>
                                 </div>

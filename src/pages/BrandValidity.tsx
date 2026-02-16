@@ -61,14 +61,14 @@ export default function BrandValidity() {
                             <section className="space-y-4">
                                 <h2 className="text-2xl font-bold text-foreground">3. Can I extend my voucher?</h2>
                                 <p className="text-muted-foreground">
-                                    No, once a voucher is issued, the expiry date is fixed by the brand and <strong>cannot be extended</strong> by SabbPe. We recommend redeeming your vouchers as soon as possible to avoid any loss.
+                                    No, once a voucher is issued, the expiry date is fixed by the brand and <strong>cannot be extended</strong> by Gift360. We recommend redeeming your vouchers as soon as possible to avoid any loss.
                                 </p>
                             </section>
 
                             <section className="space-y-4">
                                 <h2 className="text-2xl font-bold text-foreground">4. What happens if it expires?</h2>
                                 <p className="text-muted-foreground">
-                                    Expired vouchers lose their value and are no longer redeemable. SabbPe is not liable for any balance remaining on an expired gift card.
+                                    Expired vouchers lose their value and are no longer redeemable. Gift360 is not liable for any balance remaining on an expired gift card.
                                 </p>
                             </section>
 
@@ -76,7 +76,7 @@ export default function BrandValidity() {
                                 <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
                                     <h3 className="font-bold mb-2">Pro Tip:</h3>
                                     <p className="text-sm text-muted-foreground">
-                                        Enable notifications in your SabbPe account settings. We send helpful reminders before your vouchers are set to expire!
+                                        Enable notifications in your Gift360 account settings. We send helpful reminders before your vouchers are set to expire!
                                     </p>
                                 </div>
                             </div>

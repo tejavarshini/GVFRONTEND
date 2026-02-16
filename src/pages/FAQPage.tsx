@@ -41,17 +41,17 @@ const faqCategories = [
 
 const faqData = {
     general: [
-        { q: "What is SabbPe?", a: "SabbPe is India's leading digital gifting platform where you can buy, send, and manage gift vouchers from over 200+ top brands instantly." },
+        { q: "What is Gift360?", a: "Gift360 is India's leading digital gifting platform where you can buy, send, and manage gift vouchers from over 200+ top brands instantly." },
         { q: "How do I create an account?", a: "To create an account, click on the 'Sign In' button at the top right, select 'Register', and enter your mobile number or email address to get started." },
-        { q: "Is there a mobile app available?", a: "Yes, SabbPe is available on both iOS and Android. You can download it from the App Store or Google Play Store for a seamless gifting experience." },
-        { q: "Can I use SabbPe without a mobile app?", a: "Yes, our website is fully responsive and offers all the features of the mobile app. You can access it from any browser on your phone or desktop." },
+        { q: "Is there a mobile app available?", a: "Yes, Gift360 is available on both iOS and Android. You can download it from the App Store or Google Play Store for a seamless gifting experience." },
+        { q: "Can I use Gift360 without a mobile app?", a: "Yes, our website is fully responsive and offers all the features of the mobile app. You can access it from any browser on your phone or desktop." },
         { q: "How do I update my profile details?", a: "Go to 'My Profile' section after logging in. You can update your name, email, and preferred notification settings there." },
         { q: "What should I do if I forgot my password?", a: "Click on the 'Forgot Password' link on the sign-in page. We will send an OTP to your registered mobile/email to help you reset it." },
-        { q: "Are there any membership fees for SabbPe?", a: "No, joining SabbPe is completely free. You only pay for the gift vouchers you purchase." },
+        { q: "Are there any membership fees for Gift360?", a: "No, joining Gift360 is completely free. You only pay for the gift vouchers you purchase." },
         { q: "Can I use multiple vouchers in a single brand purchase?", a: "This depends on the brand's policy. Most brands allow only one voucher per transaction, while some allow multiple. Please check the brand-specific terms." },
-        { q: "How do I contact customer support?", a: "You can reach us via the 'Support' category on this FAQ page, drop a query using the button on the right, or email us at support@sabbpe.com." },
-        { q: "Is SabbPe available in multiple languages?", a: "Currently, we support English and Hindi. We are working on adding more regional languages soon." },
-        { q: "What are the benefits of the SabbPe Referral Program?", a: "Our Referral Program allows you to earn wallet credits for every friend you bring to the platform. Credits can be used to buy your favorite vouchers at a discount." },
+        { q: "How do I contact customer support?", a: "You can reach us via the 'Support' category on this FAQ page, drop a query using the button on the right, or email us at support@gift360.io." },
+        { q: "Is Gift360 available in multiple languages?", a: "Currently, we support English and Hindi. We are working on adding more regional languages soon." },
+        { q: "What are the benefits of the Gift360 Referral Program?", a: "Our Referral Program allows you to earn wallet credits for every friend you bring to the platform. Credits can be used to buy your favorite vouchers at a discount." },
     ],
     orders: [
         { q: "How can I pay for my vouchers?", a: "We support all major payment methods including UPI, Credit/Debit Cards, Net Banking, and various digital wallets like Paytm and PhonePe." },
@@ -63,11 +63,11 @@ const faqData = {
         { q: "How do I redeem my gift voucher?", a: "Each brand has its own redemption process. Generally, you can use the voucher code at the brand's physical store or on their official website/app during checkout." },
         { q: "What is the validity of the vouchers?", a: "Validity varies by brand, usually ranging from 3 to 12 months. You can check the exact expiry date in your 'My Vouchers' section." },
         { q: "Can I send a voucher to someone else?", a: "Absolutely! During the purchase process, you can select 'Gift this item', enter the recipient's details, and we'll deliver it directly to them." },
-        { q: "Can I use SabbPe vouchers for international brands?", a: "Currently, we offer vouchers for over 200+ top Indian brands. We are in the process of adding international brands to our catalog very soon." },
+        { q: "Can I use Gift360 vouchers for international brands?", a: "Currently, we offer vouchers for over 200+ top Indian brands. We are in the process of adding international brands to our catalog very soon." },
     ],
     security: [
         { q: "Is my payment information safe?", a: "Yes, we use industry-standard SSL encryption and PCI-DSS compliant payment gateways to ensure your financial data is 100% secure." },
-        { q: "What should I do if I suspect a fraudulent transaction?", a: "Immediately contact our support team at support@sabbpe.com and notify your bank. We take security very seriously and will investigate immediately." },
+        { q: "What should I do if I suspect a fraudulent transaction?", a: "Immediately contact our support team at support@gift360.io and notify your bank. We take security very seriously and will investigate immediately." },
     ],
     tech: [
         { q: "I didn't receive the OTP, what should I do?", a: "Please wait for 60 seconds and try 'Resend OTP'. Ensure you have a stable network connection. If the issue persists, try using an alternative login method." },
@@ -110,10 +110,10 @@ export default function FAQPage() {
     }, [activeCategory]);
 
     useEffect(() => {
-        document.title = "Help & FAQ | SabbPe - Your Gifting Partner";
+        document.title = "Help & FAQ | Gift360 - Your Gifting Partner";
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
-            metaDesc.setAttribute("content", "Find answers to all your questions about SabbPe gift vouchers, payments, security, and more.");
+            metaDesc.setAttribute("content", "Find answers to all your questions about Gift360 gift vouchers, payments, security, and more.");
         }
         window.scrollTo(0, 0);
     }, []);

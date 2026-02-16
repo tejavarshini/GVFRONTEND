@@ -32,7 +32,7 @@ const getBrandImageUrl = (brand: any) => {
     brand.Images?.mobile ||
     brand.Images?.small ||
     brand.Images?.raw ||
-    `https://images.sabbpe.com/${brand.BrandId}.png`
+    `https://images.gift360.io/${brand.BrandId}.png`
   );
 };
 
@@ -165,7 +165,7 @@ export default function Onboarding() {
             content: (
               <div className="space-y-3">
                 <p className="text-sm leading-relaxed">
-                  👋 Welcome to <span className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">SabbPe Gift Vouchers</span>!
+                  👋 Welcome to <span className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Gift360 Vouchers</span>!
                 </p>
                 <p className="text-sm leading-relaxed">
                   This website deals with the <span className="font-semibold">best instantly available gift vouchers</span> for you to choose the best offers around you.
@@ -557,7 +557,7 @@ export default function Onboarding() {
                   transition={{ delay: 0.6 }}
                   className="text-base font-bold tracking-wide"
                 >
-                  SabbPe Assistant
+                  Gift360 Assistant
                 </motion.h1>
                 <motion.div
                   initial={{ opacity: 0 }}

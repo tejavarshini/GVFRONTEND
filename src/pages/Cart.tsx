@@ -575,7 +575,7 @@ export default function Cart() {
           const options = {
             atomTokenId: data.atomTokenId,
             merchId: import.meta.env.VITE_PAYMENT_TRANSACTION_MERCHANTID,
-            custEmail: "contact@sabbpe.com",
+            custEmail: "contact@gift360.io",
             custMobile: "9876543210",
             returnUrl: import.meta.env.VITE_PAYMENT_RETURN_BACKEND_URL,
           };

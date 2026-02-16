@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BASE_URL = 'https://giftvouchers.sabbpe.com';
+const BASE_URL = 'https://gift360.io';
 const APP_PATH = path.resolve(__dirname, '../src/App.tsx');
 const OUTPUT_PATH = path.resolve(__dirname, '../public/sitemap.xml');
 

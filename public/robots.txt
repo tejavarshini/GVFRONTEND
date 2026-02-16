@@ -8,4 +8,4 @@ Disallow: /config
 Disallow: /api
 
 # Hostname and Sitemap
-Sitemap: https://sabbpe.com/sitemap.xml
+Sitemap: https://giftvouchers.sabbpe.com/sitemap.xml

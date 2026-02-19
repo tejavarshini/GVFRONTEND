@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
-import { Eye, EyeOff, Mail, Lock, AlertCircle, Smartphone } from "lucide-react";
+import { AlertCircle, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logoImg from "@/attached_assets/generated_images/logo.png";
-import { useLogin } from "@/hooks/useLogin";
+import { useSendOtp } from "@/hooks/useSendOtp";
+import { useLoginWithOtp } from "@/hooks/useLoginWithOtp";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,13 +14,15 @@ export default function Login() {
   const searchParams = useSearch();
   const isSessionExpired = searchParams.includes("session=expired");
 
-  const [emailOrMobile, setEmailOrMobile] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [mobile, setMobile] = useState("");
   const [error, setError] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [mobileError, setMobileError] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpInfoMessage, setOtpInfoMessage] = useState("");
 
-  const loginMutation = useLogin();
+  const sendOtpMutation = useSendOtp();
+  const loginWithOtpMutation = useLoginWithOtp();
   const { setUser } = useAuthContext();
   const { toast } = useToast();
 
@@ -33,54 +36,103 @@ export default function Login() {
     }
   }, [isSessionExpired]);
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   const validateMobile = (mobile: string) => {
     return /^[0-9]{10}$/.test(mobile);
   };
 
-  const validateForm = () => {
-    if (!emailOrMobile.trim()) {
-      setError("Email or mobile number is required");
-      return false;
-    }
-
-    const isEmail = validateEmail(emailOrMobile);
-    const isMobile = validateMobile(emailOrMobile);
-
-    if (!isEmail && !isMobile) {
-      setError("Please enter a valid email or 10-digit mobile number");
-      return false;
-    }
-
-    if (!password) {
-      setError("Password is required");
-      return false;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return false;
-    }
-
-    return true;
+  const validateOtp = (otp: string) => {
+    return /^[0-9]{4,6}$/.test(otp);
   };
 
-  const isLoading = loginMutation.isPending;
+  const handleSendOtp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError("");
+    setOtpInfoMessage("");
+    setOtpSent(false);
+    setOtp("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    if (!mobile.trim()) {
+      setMobileError("Mobile number is required");
+      return;
+    }
+
+    if (!validateMobile(mobile)) {
+      setMobileError("Please enter a valid 10-digit mobile number");
+      return;
+    }
+
+    setMobileError("");
+
+    sendOtpMutation.mutate(mobile, {
+      onSuccess: (data) => {
+        if (data.notRegistered) {
+          setError("Mobile number not registered. Please register first.");
+          toast({
+            title: "Not registered",
+            description: "This mobile number is not registered. Please sign up first.",
+            variant: "destructive",
+            duration: 4000,
+          });
+          return;
+        }
+        if (data.success) {
+          setOtpSent(true);
+          setOtpInfoMessage(data.message || "OTP sent successfully");
+          toast({
+            title: "OTP sent",
+            description: data.message || "OTP has been sent to your mobile number",
+            duration: 3000,
+          });
+        }
+      },
+      onError: (err: any) => {
+        if (err?.response?.data) {
+          const serverMessage =
+            typeof err.response.data === "string"
+              ? err.response.data
+              : err.response.data.message || "Failed to send OTP. Please try again.";
+          setError(serverMessage);
+        } else {
+          setError("Failed to send OTP. Please try again.");
+        }
+        toast({
+          title: "Error",
+          description: err?.response?.data?.message || "Failed to send OTP. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      },
+    });
+  };
+
+  const handleOtpLogin = (e: React.MouseEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!validateForm()) return;
+    if (!mobile.trim()) {
+      setError("Please enter your mobile number and request an OTP first.");
+      return;
+    }
 
-    loginMutation.mutate(
+    if (!validateMobile(mobile)) {
+      setError("Please enter a valid 10-digit mobile number");
+      return;
+    }
+
+    if (!otp.trim()) {
+      setError("Please enter the OTP.");
+      return;
+    }
+
+    if (!validateOtp(otp)) {
+      setError("Please enter a valid 4-6 digit OTP");
+      return;
+    }
+
+    loginWithOtpMutation.mutate(
       {
-        emailOrMobile,
-        password,
+        mobileNumber: mobile.trim(),
+        otp,
       },
       {
         onSuccess: (data) => {
@@ -94,8 +146,8 @@ export default function Login() {
             });
 
             toast({
-              title: `Welcome back!, ${data.userInfo.name}`,
-              description: data.message,
+              title: "Welcome back!",
+              description: data.message || "Login successful",
               duration: 3000,
             });
 
@@ -103,23 +155,33 @@ export default function Login() {
               setLocation("/");
             }, 500);
           } else {
-            setError(data.message || "Login Failed");
+            setError(data.message || "OTP login failed");
           }
         },
-        onError: (error) => {
-          if (error.response?.status === 400) {
-            const errors = error.response.data as Record<string, string>;
+        onError: (err: any) => {
+          if (err?.response?.status === 400 && err.response?.data) {
+            const errors = err.response.data as Record<string, string>;
             const errorMessage = Object.values(errors).join(", ");
             setError(errorMessage);
+          } else if (err?.response?.data) {
+            const serverMessage =
+              typeof err.response.data === "string"
+                ? err.response.data
+                : err.response.data.message || "OTP login failed. Please try again.";
+            setError(serverMessage);
           } else {
-            setError("Login failed. Please check your credentials.");
+            setError("OTP login failed. Please try again.");
           }
+          toast({
+            title: "Error",
+            description: err?.response?.data?.message || "Invalid OTP. Please try again.",
+            variant: "destructive",
+            duration: 3000,
+          });
         },
       }
     );
   };
-
-  const isMobileNumber = /^[0-9]+$/.test(emailOrMobile);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
@@ -140,7 +202,7 @@ export default function Login() {
           <p className="text-gray-600 dark:text-gray-400">
             {isSessionExpired
               ? "Your session has expired. Please login again to continue."
-              : "Sign in to your account to continue"}
+              : "Sign in with your mobile number and OTP"}
           </p>
         </div>
 
@@ -152,7 +214,7 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             {error && (
               <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -160,94 +222,98 @@ export default function Login() {
               </div>
             )}
 
-            {/* Email or Mobile */}
+            {/* Mobile Number */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Email or Mobile Number
+                Mobile Number
               </label>
-              <div className="relative">
-                {isMobileNumber ? (
+              <div className="flex gap-2">
+                <div className="relative flex-1">
                   <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                ) : (
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                )}
-                <Input
-                  placeholder="Enter your email or mobile number"
-                  value={emailOrMobile}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setEmailOrMobile(value);
-                    setError("");
-
-                    if (value.trim() === "") {
-                      setEmailError("");
-                      return;
-                    }
-
-                    if (/^[0-9]+$/.test(value)) {
-                      if (!/^[0-9]{10}$/.test(value)) {
-                        setEmailError("Please enter a valid mobile number");
-                      } else {
-                        setEmailError("");
-                      }
-                    } else {
-                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                      if (!emailRegex.test(value)) {
-                        setEmailError("Please enter a valid email");
-                      } else {
-                        setEmailError("");
-                      }
-                    }
-                  }}
-                  className="pl-10 h-12"
-                />
+                  <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-700 dark:text-gray-300 font-medium text-sm pointer-events-none z-10">
+                    +91
+                  </span>
+                  <Input
+                    type="tel"
+                    placeholder="Enter your mobile number"
+                    value={mobile}
+                    maxLength={10}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (!/^[0-9]*$/.test(value)) return;
+                      setMobile(value);
+                      setMobileError("");
+                      setError("");
+                    }}
+                    disabled={otpSent}
+                    className="pl-16 pr-4 h-12 w-full"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={
+                    !validateMobile(mobile) ||
+                    sendOtpMutation.isPending ||
+                    otpSent
+                  }
+                  className={`h-12 px-4 sm:px-6 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 ${
+                    otpSent
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  }`}
+                >
+                  {sendOtpMutation.isPending
+                    ? "Sending..."
+                    : otpSent
+                    ? "Resend"
+                    : "Send OTP"}
+                </Button>
               </div>
-              {emailError && (
-                <p className="text-red-500 text-sm mt-1">{emailError}</p>
+              {mobileError && (
+                <p className="text-red-500 text-sm mt-1">{mobileError}</p>
+              )}
+              {otpInfoMessage && otpSent && (
+                <p className="text-green-500 text-sm mt-1">{otpInfoMessage}</p>
               )}
             </div>
 
-            {/* Password */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Password
+            {/* OTP Input - Show only after OTP is sent */}
+            {otpSent && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Enter OTP
                 </label>
-                <Link href="/forgot-password">
-                  <button
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    placeholder="Enter 4-6 digit OTP"
+                    value={otp}
+                    maxLength={6}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (!/^[0-9]*$/.test(value)) return;
+                      setOtp(value);
+                      setError("");
+                    }}
+                    className="h-12"
+                  />
+                  <Button
                     type="button"
-                    className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                    onClick={handleOtpLogin}
+                    disabled={
+                      !validateOtp(otp) || loginWithOtpMutation.isPending
+                    }
+                    className="h-12 px-4 sm:px-6 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 bg-purple-600 hover:bg-purple-700"
                   >
-                    Forgot Password?
-                  </button>
-                </Link>
+                    {loginWithOtpMutation.isPending
+                      ? "Verifying..."
+                      : "Verify & Login"}
+                  </Button>
+                </div>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setError("");
-                  }}
-                  className="pl-10 pr-10 h-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-            </div>
-
-            <Button className="w-full h-12" type="submit" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+            )}
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">

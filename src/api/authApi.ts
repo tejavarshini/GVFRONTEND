@@ -20,6 +20,49 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
+/** Decode JWT payload for userId (clientId), phoneNumber, email. */
+export function decodeJwtPayload(token: string): {
+  userId?: string;
+  phoneNumber?: string;
+  email?: string;
+} {
+  try {
+    const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
+    if (!base64) return {};
+    const payload = JSON.parse(atob(base64)) as Record<string, unknown>;
+    return {
+      userId: payload.userId as string | undefined,
+      phoneNumber: payload.phoneNumber as string | undefined,
+      email: payload.email as string | undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
+/** Verify OTP and login (backend: POST /auth/login/verify-otp). Returns token; userInfo derived from token. */
+export const loginWithOtp = async (data: LoginWithOtpRequest): Promise<LoginResponse> => {
+  const response = await axios.post<{ success: boolean; token: string | null; message: string }>(
+    `${API_BASE_URL}/login/verify-otp`,
+    { mobileNumber: data.mobileNumber, otp: data.otp }
+  );
+  const body = response.data;
+  const payload = body.token ? decodeJwtPayload(body.token) : {};
+  return {
+    token: body.token ?? null,
+    message: body.message,
+    userInfo:
+      body.token && payload.userId
+        ? {
+            name: "",
+            email: payload.email ?? "",
+            mobile: payload.phoneNumber ?? data.mobileNumber,
+            clientId: payload.userId,
+          }
+        : null,
+  };
+};
+
 export const logout = async (data: LogoutRequest): Promise<string> => {
   const response = await axios.post(`${API_BASE_URL}/logout`, data);
   return response.data; // Returns "Logout successful"

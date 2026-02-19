@@ -10,6 +10,11 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface LoginWithOtpRequest {
+  mobileNumber: string;
+  otp: string;
+}
+
 export interface LoginResponse {
   token: string | null;
   message: string;

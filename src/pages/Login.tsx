@@ -159,22 +159,15 @@ export default function Login() {
           }
         },
         onError: (err: any) => {
-          if (err?.response?.status === 400 && err.response?.data) {
-            const errors = err.response.data as Record<string, string>;
-            const errorMessage = Object.values(errors).join(", ");
-            setError(errorMessage);
-          } else if (err?.response?.data) {
-            const serverMessage =
-              typeof err.response.data === "string"
-                ? err.response.data
-                : err.response.data.message || "OTP login failed. Please try again.";
-            setError(serverMessage);
-          } else {
-            setError("OTP login failed. Please try again.");
-          }
+          const data = err?.response?.data;
+          const serverMessage =
+            typeof data === "string"
+              ? data
+              : data?.message || "OTP login failed. Please try again.";
+          setError(serverMessage);
           toast({
             title: "Error",
-            description: err?.response?.data?.message || "Invalid OTP. Please try again.",
+            description: serverMessage,
             variant: "destructive",
             duration: 3000,
           });

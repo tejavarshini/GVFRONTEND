@@ -83,7 +83,7 @@ export default function Register() {
     setOtp("");
     setOtpSent(false);
 
-    registerSendOtpMutation.mutate(mobile, {
+    registerSendOtpMutation.mutate({ mobileNumber: mobile, email }, {
       onSuccess: (data) => {
         if (data.alreadyRegistered) {
           toast({

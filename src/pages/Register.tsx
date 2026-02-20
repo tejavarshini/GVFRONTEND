@@ -78,7 +78,7 @@ export default function Register() {
     if (!validateRegistrationForm()) {
       return;
     }
-
+    
     // Reset OTP states when resending
     setOtp("");
     setOtpSent(false);

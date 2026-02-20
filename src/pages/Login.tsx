@@ -25,6 +25,7 @@ export default function Login() {
   const loginWithOtpMutation = useLoginWithOtp();
   const { setUser } = useAuthContext();
   const { toast } = useToast();
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (isSessionExpired) {
@@ -62,8 +63,9 @@ export default function Login() {
     }
 
     setMobileError("");
+    console.log("Sending:", { mobileNumber: mobile, email: email.trim() });
 
-    sendOtpMutation.mutate(mobile, {
+    sendOtpMutation.mutate({ mobileNumber: mobile, email: email.trim() }, {
       onSuccess: (data) => {
         if (data.notRegistered) {
           setError("Mobile number not registered. Please register first.");
@@ -130,10 +132,7 @@ export default function Login() {
     }
 
     loginWithOtpMutation.mutate(
-      {
-        mobileNumber: mobile.trim(),
-        otp,
-      },
+      { mobileNumber: mobile.trim(), otp, email: email.trim() },
       {
         onSuccess: (data) => {
           if (data.token && data.userInfo) {
@@ -214,7 +213,19 @@ export default function Login() {
                 <span>{error}</span>
               </div>
             )}
-
+<div>
+  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+    Email
+  </label>
+  <Input
+    type="email"
+    placeholder="Enter your registered email"
+    value={email}
+    onChange={(e) => { setEmail(e.target.value); setError(""); }}
+    disabled={otpSent}
+    className="h-12"
+  />
+</div>
             {/* Mobile Number */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">

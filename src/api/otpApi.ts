@@ -37,10 +37,10 @@ export const registerVerifyOtp = async (
 };
 
 /** POST /auth/login/send-otp */
-export const sendLoginOtp = async (mobileNumber: string): Promise<LoginSendOtpResponse> => {
+export const sendLoginOtp = async (params: { mobileNumber: string; email?: string }): Promise<LoginSendOtpResponse> => {
   const { data } = await axios.post<LoginSendOtpResponse>(
     `${API_BASE_URL}/login/send-otp`,
-    { mobileNumber }
+    params
   );
   return data;
 };

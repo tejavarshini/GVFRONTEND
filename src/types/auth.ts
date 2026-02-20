@@ -13,6 +13,7 @@ export interface LoginRequest {
 export interface LoginWithOtpRequest {
   mobileNumber: string;
   otp: string;
+  email?: string; // ADD THIS
 }
 
 export interface LoginResponse {

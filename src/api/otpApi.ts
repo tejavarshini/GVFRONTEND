@@ -1,46 +1,41 @@
 import axios from "axios";
-import type {
-  RegisterSendOtpRequest,
-  RegisterSendOtpResponse,
-  RegisterVerifyOtpRequest,
-  RegisterVerifyOtpResponse,
-  LoginSendOtpResponse,
-} from "@/types/otp";
+import type { SendOtpRequest, SendOtpResponse, VerifyOtpRequest, VerifyOtpResponse } from "@/types/otp";
 
-const API_BASE_URL = import.meta.env.VITE_AUTH_API_URL;
+const OTP_API_URL = "https://api.msg91.com/api/v5/widget/sendOtp";
+const VERIFY_OTP_API_URL = "https://api.msg91.com/api/v5/widget/verifyOtp";
+const WIDGET_ID = "3661676c6767343735313734";
+const AUTH_KEY = "441109AdIRodg4B6932ec90P1";
 
-/** POST /auth/register/send-otp */
-export const registerSendOtp = async (
-  params: RegisterSendOtpRequest
-): Promise<RegisterSendOtpResponse> => {
-  const { data } = await axios.post<RegisterSendOtpResponse>(
-    `${API_BASE_URL}/register/send-otp`,
-    { mobileNumber: params.mobileNumber, email: params.email }
-  );
-  return data;
+export const sendOtp = async (mobileNumber: string): Promise<SendOtpResponse> => {
+  const requestBody: SendOtpRequest = {
+    widgetId: WIDGET_ID,
+    identifier: `91${mobileNumber}`,
+  };
+
+  const response = await axios.post<SendOtpResponse>(OTP_API_URL, requestBody, {
+    headers: {
+      authkey: AUTH_KEY,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data;
 };
 
-/** POST /auth/register/verify-otp */
-export const registerVerifyOtp = async (
-  params: RegisterVerifyOtpRequest
-): Promise<RegisterVerifyOtpResponse> => {
-  const { data } = await axios.post<RegisterVerifyOtpResponse>(
-    `${API_BASE_URL}/register/verify-otp`,
-    {
-      fullName: params.fullName,
-      email: params.email,
-      mobileNumber: params.mobileNumber,
-      otp: params.otp,
-    }
-  );
-  return data;
-};
+// ADD THIS NEW FUNCTION:
+export const verifyOtp = async (reqId: string, otp: string): Promise<VerifyOtpResponse> => {
+  const requestBody: VerifyOtpRequest = {
+    widgetId: WIDGET_ID,
+    reqId: reqId,
+    otp: otp,
+  };
 
-/** POST /auth/login/send-otp */
-export const sendLoginOtp = async (params: { mobileNumber: string; email?: string }): Promise<LoginSendOtpResponse> => {
-  const { data } = await axios.post<LoginSendOtpResponse>(
-    `${API_BASE_URL}/login/send-otp`,
-    params
-  );
-  return data;
+  const response = await axios.post<VerifyOtpResponse>(VERIFY_OTP_API_URL, requestBody, {
+    headers: {
+      authkey: AUTH_KEY,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data;
 };

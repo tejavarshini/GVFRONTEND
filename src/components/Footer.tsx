@@ -14,13 +14,7 @@ export default function Footer() {
           </div>
 
           {/* LINKS - FIXED: Responsive text and spacing */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
-            <Link href="/blogs" className="hover:underline hover:text-foreground transition-colors">
-              Blogs
-            </Link>
-            <Link href="/faq" className="hover:underline hover:text-foreground transition-colors">
-              FAQ
-            </Link>
+          <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:underline hover:text-foreground transition-colors">
               Privacy Policy
             </Link>

@@ -7,7 +7,6 @@ import VoucherCard from '@/components/VoucherCard';
 import Footer from '@/components/Footer';
 import { vouchers } from '@/data/vouchers';
 import CategoriesSection from '@/components/CategoriesSection';
-import TopBrandsSection from '@/components/TopBrandsSection';
 import MobileBottomNav from "@/components/MobileBottomNav";
 
 // Import the new banner components
@@ -49,8 +48,8 @@ export default function Home() {
                     </div>
                 </section> */}
 
-                {/* TOP BRANDS BY CATEGORY */}
-                <TopBrandsSection />
+                {/* TOP BRANDS BY CATEGORY - Hidden since layered scrolling shows all categories */}
+                {/* <TopBrandsSection /> */}
 
                 {/* FEATURED VOUCHERS */}
                 {homeConfig.featuredVouchers.enabled && (

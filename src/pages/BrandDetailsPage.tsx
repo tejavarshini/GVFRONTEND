@@ -8,7 +8,7 @@ import {
   Tag,
   Plus,
   Minus,
-  ChevronDown,
+  // ChevronDown,
   MapPin,
   Building2,
   Store,
@@ -47,6 +47,27 @@ async function validateImage(url: string): Promise<string> {
   } catch {
     return FALLBACK;
   }
+}
+
+// ✅ Helper: Snap amount to nearest 100
+function snapAmount(value: number): number {
+  return Math.round(value / 100) * 100;
+}
+
+// ✅ Helper: Map slider position (0-100) to amount with non-linear easing
+function mapSliderToAmount(sliderPercent: number, min: number, max: number): number {
+  // Apply easing: slower at start, faster at end
+  const easedPercent = Math.pow(sliderPercent / 100, 1.8);
+  const rawAmount = min + easedPercent * (max - min);
+  return snapAmount(rawAmount);
+}
+
+// ✅ Helper: Reverse map amount to slider position (0-100)
+function mapAmountToSlider(amount: number, min: number, max: number): number {
+  const normalizedAmount = (amount - min) / (max - min);
+  // Reverse the easing
+  const sliderPercent = Math.pow(normalizedAmount, 1 / 1.8) * 100;
+  return Math.max(0, Math.min(100, sliderPercent));
 }
 
 function TextWithLineBreaks({ text }: { text: string }) {
@@ -398,10 +419,11 @@ useEffect(() => {
     setError("");
   };
 
-  const handleDropdownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAmount(e.target.value);
-    setError("");
-  };
+const handleAmountButtonClick = (denomination: number) => {
+  setAmount(denomination.toString());
+  setError("");
+};
+
 
   const isValidAmount = () => {
     if (!amount) return false;
@@ -463,55 +485,57 @@ useEffect(() => {
 
   const shouldShowInfoButtons = hasRedeemSteps || hasInstructions || hasTerms || hasAbout;
 
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
+return (
+  <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
+
       <Header />
 
       {/* Modal Overlay */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-border">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm">
+
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] sm:max-h-[90vh] flex flex-col border border-border overflow-hidden">
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border">
-              <h2 className="text-lg sm:text-xl font-bold">Brand Information</h2>
+            <div className="flex items-center justify-between px-4 py-2.5 sm:px-6 sm:py-3 border-b border-border">
+              <h2 className="text-base sm:text-lg font-bold">Brand Information</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="w-8 h-8 rounded-full hover:bg-accent flex items-center justify-center transition-colors"
+                className="w-7 h-7 rounded-full hover:bg-accent flex items-center justify-center transition-colors"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-{/* Modal Tabs */}
-<div className="flex overflow-x-auto border-b border-border bg-muted/30 scrollbar-hide">
+{/* Modal Tabs - Sticky with Enhanced Active State */}
+<div className="sticky top-0 z-10 flex overflow-x-auto border-b-2 border-border/80 bg-card/95 backdrop-blur-md scrollbar-hide shadow-sm">
   {hasAbout && (
-    <button onClick={() => setActiveTab("about")} className={`flex-shrink-0 min-w-[80px] sm:flex-1 py-3 px-2 sm:px-4 text-xs sm:text-base font-medium transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === "about" ? "text-primary border-b-2 border-primary bg-background" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
-      <Info className="h-4 w-4" />
+    <button onClick={() => setActiveTab("about")} className={`flex-1 basis-0 py-2 px-2 text-xs font-medium transition-all duration-200 flex items-center justify-center gap-1 ${activeTab === "about" ? "text-primary border-b-[3px] border-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
+      <Info className="w-4 h-4" />
       <span className="hidden sm:inline">About</span>
       <span className="sm:hidden">About</span>
     </button>
   )}
   
 {hasRedeemSteps && (
-  <button onClick={() => setActiveTab("redeem")} className={`flex-shrink-0 min-w-[80px] sm:flex-1 py-3 px-2 sm:px-4 text-xs sm:text-base font-medium transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === "redeem" ? "text-primary border-b-2 border-primary bg-background" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
-    <BookOpen className="h-4 w-4" />
+  <button onClick={() => setActiveTab("redeem")} className={`flex-1 basis-0 py-2 px-2 text-xs font-medium transition-all duration-200 flex items-center justify-center gap-1 ${activeTab === "redeem" ? "text-primary border-b-[3px] border-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
+    <BookOpen className="w-4 h-4" />
     <span className="whitespace-nowrap">Redeem Steps</span>
   </button>
 )}
 
   
   {hasInstructions && (
-    <button onClick={() => setActiveTab("instructions")} className={`flex-shrink-0 min-w-[80px] sm:flex-1 py-3 px-2 sm:px-4 text-xs sm:text-base font-medium transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === "instructions" ? "text-primary border-b-2 border-primary bg-background" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
-      <AlertTriangle className="h-4 w-4" />
+    <button onClick={() => setActiveTab("instructions")} className={`flex-1 basis-0 py-2 px-2 text-xs font-medium transition-all duration-200 flex items-center justify-center gap-1 ${activeTab === "instructions" ? "text-primary border-b-[3px] border-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
+      <AlertTriangle className="w-4 h-4" />
       <span className="hidden sm:inline">Instructions</span>
       <span className="sm:hidden">Info</span>
     </button>
   )}
   
   {hasTerms && (
-    <button onClick={() => setActiveTab("terms")} className={`flex-shrink-0 min-w-[80px] sm:flex-1 py-3 px-2 sm:px-4 text-xs sm:text-base font-medium transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === "terms" ? "text-primary border-b-2 border-primary bg-background" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
-      <FileText className="h-4 w-4" />
+    <button onClick={() => setActiveTab("terms")} className={`flex-1 basis-0 py-2 px-2 text-xs font-medium transition-all duration-200 flex items-center justify-center gap-1 ${activeTab === "terms" ? "text-primary border-b-[3px] border-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}>
+      <FileText className="w-4 h-4" />
       <span className="hidden sm:inline">Terms & Conditions</span>
       <span className="sm:hidden whitespace-nowrap">T & C</span>
     </button>
@@ -520,21 +544,50 @@ useEffect(() => {
 
 
             {/* Modal Content */}
-            {/* Modal Content */}
-<div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0">
+<div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5 min-h-0 scroll-smooth">
 
               {activeTab === "about" && hasAbout && (
-  <div className="space-y-4">
-    <h3 className="text-lg font-bold">About</h3>
-    <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+  <div className="space-y-3 sm:space-y-4">
+    <h3 className="text-lg sm:text-xl font-bold">About</h3>
+    <p className="text-muted-foreground leading-relaxed text-sm sm:text-base max-w-none">
       {brand.Description}
     </p>
   </div>
 )}
               {activeTab === "redeem" && hasRedeemSteps && (
-                <div className="space-y-6">
-                  <h3 className="text-lg font-bold">How to Redeem</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="space-y-4 sm:space-y-5">
+                  <h3 className="text-lg sm:text-xl font-bold">How to Redeem</h3>
+                  
+                  {/* Mobile: Single Column Cards */}
+                  <div className="flex flex-col gap-4 sm:hidden">
+                    {brand.RedeemSteps.map((step, i) => (
+                      <div
+                        key={i}
+                        className="flex flex-col items-center text-center p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/30 border border-border/50 space-y-3"
+                      >
+                        {step.image ? (
+                          <img
+                            src={step.image}
+                            alt={step.title}
+                            className="w-16 h-16 object-cover rounded-lg border border-border shadow-sm"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary font-bold border border-primary/20 text-base shadow-sm">
+                            {i + 1}
+                          </div>
+                        )}
+                        <div className="max-w-[280px]">
+                          <p className="text-sm font-semibold text-foreground leading-relaxed">{step.title}</p>
+                          {step.description && (
+                            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{step.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Desktop: Grid Layout */}
+                  <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
                     {brand.RedeemSteps.map((step, i) => (
                       <div
                         key={i}
@@ -544,14 +597,14 @@ useEffect(() => {
                           <img
                             src={step.image}
                             alt={step.title}
-                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-border"
+                            className="w-20 h-20 lg:w-24 lg:h-24 object-cover rounded-lg border border-border"
                           />
                         ) : (
-                          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20 text-base sm:text-lg">
+                          <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20 text-lg lg:text-xl">
                             {i + 1}
                           </div>
                         )}
-                        <p className="text-sm sm:text-base font-medium">{step.title}</p>
+                        <p className="text-base lg:text-lg font-medium">{step.title}</p>
                       </div>
                     ))}
                   </div>
@@ -559,15 +612,15 @@ useEffect(() => {
               )}
 
               {activeTab === "instructions" && hasInstructions && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold">Important Instructions</h3>
-                  <ul className="space-y-3">
+                <div className="space-y-3 sm:space-y-4">
+                  <h3 className="text-lg sm:text-xl font-bold">Important Instructions</h3>
+                  <ul className="space-y-3 sm:space-y-4">
                     {Object.values(brand.ImportantInstruction).map((inst, i) => (
-                      <li key={i} className="flex gap-3 text-sm sm:text-base">
-                        <span className="w-6 h-6 flex-shrink-0 rounded-full bg-amber-200 dark:bg-amber-900/50 flex items-center justify-center font-bold text-amber-800 dark:text-amber-300 text-sm">
+                      <li key={i} className="flex gap-3 sm:gap-4 text-sm sm:text-base lg:text-lg p-3 sm:p-4 rounded-xl bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/30 dark:border-amber-800/30 overflow-hidden">
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0 rounded-full bg-amber-200 dark:bg-amber-900/50 flex items-center justify-center font-bold text-amber-800 dark:text-amber-300 text-base shadow-sm">
                           !
                         </span>
-                        <span className="flex-1 text-foreground">
+                        <span className="flex-1 min-w-0 text-foreground leading-relaxed pt-0.5 break-words">
                           <TextWithLineBreaks text={inst} />
                         </span>
                       </li>
@@ -577,17 +630,60 @@ useEffect(() => {
               )}
 
               {activeTab === "terms" && hasTerms && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold">Terms & Conditions</h3>
-                  <ul className="space-y-2 sm:space-y-3">
+                <div className="space-y-1.5 sm:space-y-2 max-w-4xl">
+                  <h3 className="text-xs sm:text-sm font-semibold">Terms & Conditions</h3>
+                  
+                  {/* Quick Summary Card */}
+                  <div className="bg-primary/5 dark:bg-primary/10 border-l-4 border-primary rounded-lg p-1.5 space-y-0 overflow-hidden">
+                    <div className="flex items-start gap-1">
+                      <FileText className="h-3 w-3 text-primary flex-shrink-0 mt-0.5" />
+                      <div className="space-y-0 flex-1 min-w-0">
+                        <p className="text-[10px] font-semibold text-foreground mb-0.5">Key Highlights</p>
+                        <ul className="space-y-0 text-[10px] text-muted-foreground">
+                          <li className="flex items-center gap-1">
+                            <span className="w-0.5 h-0.5 rounded-full bg-primary flex-shrink-0"></span>
+                            <span className="flex-1"><strong className="text-foreground">Validity:</strong> Check expiry before use</span>
+                          </li>
+                          <li className="flex items-center gap-1">
+                            <span className="w-0.5 h-0.5 rounded-full bg-primary flex-shrink-0"></span>
+                            <span className="flex-1"><strong className="text-foreground">Usage:</strong> One voucher per transaction</span>
+                          </li>
+                          <li className="flex items-center gap-1">
+                            <span className="w-0.5 h-0.5 rounded-full bg-primary flex-shrink-0"></span>
+                            <span className="flex-1"><strong className="text-foreground">Non-refundable:</strong> Cannot be exchanged for cash</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Terms List */}
+                  <ul className="space-y-1 px-1">
                     {typeof brand.Tnc === "object" &&
                       !Array.isArray(brand.Tnc) &&
                       Object.values(brand.Tnc as Record<string, string>).map(
-                        (t, i) => (
-                          <li key={i} className="text-sm sm:text-base">
-                            <TextWithLineBreaks text={t} />
-                          </li>
-                        )
+                        (t, i) => {
+                          // Remove leading numbers and enhance with bold keywords
+                          const cleanText = t.replace(/^\d+\.\s*/, '');
+                          const enhancedText = cleanText
+                            .replace(/(\d+\s*months?|\d+\s*years?|expiry|validity|valid)/gi, '<strong>$1</strong>')
+                            .replace(/(one voucher per|not valid|cannot be|non-refundable|digital voucher)/gi, '<strong>$1</strong>')
+                            .replace(/(31st? december|discount|cash)/gi, '<strong>$1</strong>');
+                          
+                          return (
+                            <li key={i} className="flex gap-1 items-start">
+                              <span className="w-3.5 h-3.5 flex-shrink-0 rounded-full bg-primary/10 dark:bg-primary/20 text-primary text-[8px] font-semibold flex items-center justify-center mt-0.5 shadow-sm">
+                                {i + 1}
+                              </span>
+                              <div className="flex-1 min-w-0 pl-0">
+                                <span 
+                                  className="text-[11px] leading-[1.3] text-foreground/90 dark:text-foreground/85 block break-words"
+                                  dangerouslySetInnerHTML={{ __html: enhancedText }}
+                                />
+                              </div>
+                            </li>
+                          );
+                        }
                       )}
 
                     {typeof brand.Tnc === "string" &&
@@ -603,13 +699,34 @@ useEffect(() => {
                           .split(/\.(?=\s*\d)/)
                           .map((p) => p.trim())
                           .filter((p) => p.length > 0)
-                          .map((p) => (p.endsWith(".") ? p : p + "."));
+                          .map((p) => {
+                            // Remove leading numbers
+                            const cleaned = p.replace(/^\d+\.\s*/, '');
+                            // Add period if missing
+                            return cleaned.endsWith(".") ? cleaned : cleaned + ".";
+                          });
 
-                        return points.map((point, i) => (
-                          <li key={i} className="text-sm sm:text-base">
-                            <TextWithLineBreaks text={point} />
-                          </li>
-                        ));
+                        return points.map((point, i) => {
+                          // Enhance with bold keywords
+                          const enhancedPoint = point
+                            .replace(/(\d+\s*months?|\d+\s*years?|expiry|validity|valid)/gi, '<strong>$1</strong>')
+                            .replace(/(one voucher per|not valid|cannot be|non-refundable|digital voucher)/gi, '<strong>$1</strong>')
+                            .replace(/(31st? december|discount|cash|bill)/gi, '<strong>$1</strong>');
+
+                          return (
+                            <li key={i} className="flex gap-1 items-start">
+                              <span className="w-3.5 h-3.5 flex-shrink-0 rounded-full bg-primary/10 dark:bg-primary/20 text-primary text-[8px] font-semibold flex items-center justify-center mt-0.5 shadow-sm">
+                                {i + 1}
+                              </span>
+                              <div className="flex-1 min-w-0 pl-0">
+                                <span 
+                                  className="text-[11px] leading-[1.3] text-foreground/90 dark:text-foreground/85 block break-words"
+                                  dangerouslySetInnerHTML={{ __html: enhancedPoint }}
+                                />
+                              </div>
+                            </li>
+                          );
+                        });
                       })()}
                   </ul>
                 </div>
@@ -639,8 +756,9 @@ useEffect(() => {
         </button>
       </div>
 
-      <main className="flex-1 pb-20 md:pb-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+<main className="flex-1 pb-20 md:pb-0 w-full">
+  <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+
           {/* Back Button */}
           <Link href="/brands">
             <button className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-primary transition-colors text-sm font-medium group">
@@ -654,8 +772,9 @@ useEffect(() => {
             {/* LEFT COLUMN */}
             <div className="space-y-6">
               {/* Brand Card */}
-              <section className="bg-card rounded-xl border border-border shadow-sm">
-                <div className="p-4 sm:p-6">
+<section className="bg-card rounded-xl border border-border shadow-sm">
+  <div className="p-3 sm:p-4 md:p-6">
+
                   <div className="flex gap-4 items-start">
                     <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-muted/30 rounded-xl flex items-center justify-center border border-border flex-shrink-0 p-3">
                       <img
@@ -709,7 +828,8 @@ useEffect(() => {
               </section>
 
                                           {/* Mobile Purchase Section */}
-              <section className="md:hidden bg-card rounded-xl border border-border shadow-sm p-4 sm:p-6">
+              <section className="md:hidden bg-card rounded-xl border border-border shadow-sm p-3 sm:p-4">
+
                 <h2 className="text-lg sm:text-xl font-bold mb-4">Purchase Details</h2>
 
                 {isFixedType && (
@@ -733,35 +853,38 @@ useEffect(() => {
                   />
                 )}
 
-                {isFixedType && (
-                  <div className="mb-4">
-                    <label className="text-sm font-semibold block mb-2">
-                      Amount
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={amount}
-                        onChange={handleDropdownChange}
-                        className="w-full h-11 sm:h-12 pl-4 pr-10 text-sm sm:text-base border border-border rounded-lg bg-background appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                      >
-                        {brand.DenominationList &&
-                        brand.DenominationList.length > 0 ? (
-                          brand.DenominationList.map((denomination, index) => (
-                            <option
-                              key={`${denomination}-${index}`}
-                              value={denomination}
-                            >
-                              ₹{denomination.toLocaleString()}
-                            </option>
-                          ))
-                        ) : (
-                          <option value="">No denominations</option>
-                        )}
-                      </select>
-                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground pointer-events-none" />
-                    </div>
-                  </div>
-                )}
+{isFixedType && (
+  <div className="mb-4">
+    {/* Denomination Buttons */}
+    <div className="flex flex-wrap gap-2 sm:gap-3 -mx-0.5">
+
+
+      {brand.DenominationList && brand.DenominationList.length > 0 ? (
+        brand.DenominationList.map((denomination, index) => (
+          <button
+            key={`denomination-${index}`}
+            onClick={() => handleAmountButtonClick(denomination)}
+            className={`
+              flex-shrink-0 px-2.5 sm:px-4 py-0.5 sm:py-0.5 rounded-lg sm:rounded-xl
+              text-sm sm:text-base font-semibold
+              border-2 transition-all duration-200
+              ${
+                Number(amount) === denomination
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
+                  : "bg-background text-foreground border-border hover:border-primary hover:bg-accent"
+              }
+            `}
+          >
+            ₹{denomination.toLocaleString()}
+          </button>
+        ))
+      ) : (
+        <p className="text-sm text-muted-foreground">No denominations available</p>
+      )}
+    </div>
+  </div>
+)}
+
 
                 {isVariableType && (
                   <div className="mb-4">
@@ -786,6 +909,32 @@ useEffect(() => {
                         }`}
                       />
                     </div>
+                    
+                    {/* Price Slider - Enhanced UX */}
+                    <div className="mt-4 px-1">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}
+                        onChange={(e) => {
+                          const sliderValue = Number(e.target.value);
+                          const mappedAmount = mapSliderToAmount(sliderValue, minPrice, maxPrice);
+                          setAmount(mappedAmount.toString());
+                          setError("");
+                        }}
+                        className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb"
+                        style={{
+                          background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}%, hsl(var(--border)) ${mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}%, hsl(var(--border)) 100%)`
+                        }}
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                        <span>₹{minPrice.toLocaleString()}</span>
+                        <span>₹{maxPrice.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    
                     {error && (
                       <div className="flex gap-2 bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-600 dark:text-red-400 text-sm mt-2">
                         <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
@@ -963,38 +1112,37 @@ useEffect(() => {
 
 {/* Info Buttons Section */}
 {shouldShowInfoButtons && (
-  <section className="bg-card rounded-xl border border-border shadow-sm p-4 sm:p-6">
-    <div className="flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide pb-1">
-      
+  <section className="bg-card rounded-xl border border-border shadow-sm p-2.5 sm:p-6">
+    <div className="flex gap-0.5 sm:gap-2 overflow-x-auto scrollbar-hide pb-1 justify-center">
       {/* About Button - Mobile Only */}
       {hasAbout && (
-        <button 
-          onClick={() => openModal("about")} 
-          className="flex-shrink-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-2.5 sm:px-3 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-xs sm:text-sm font-medium md:hidden"
+        <button
+          onClick={() => openModal("about")}
+          className="flex-shrink-0 flex items-center justify-center gap-0.5 sm:gap-1.5 py-1 px-1.5 sm:px-3 rounded-md border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-2xs sm:text-sm font-medium md:hidden"
         >
-          <Info className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+          <Info className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
           <span>About</span>
         </button>
       )}
 
-      {/* Redeem Button - "Redeem Steps" on all screens */}
+      {/* Redeem Button - Redeem Steps on all screens */}
       {hasRedeemSteps && (
-        <button 
-          onClick={() => openModal("redeem")} 
-          className="flex-shrink-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-2.5 sm:px-3 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-xs sm:text-sm font-medium whitespace-nowrap"
+        <button
+          onClick={() => openModal("redeem")}
+          className="flex-shrink-0 flex items-center justify-center gap-0.5 sm:gap-1.5 py-1 px-1.5 sm:px-3 rounded-md border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-2xs sm:text-sm font-medium whitespace-nowrap"
         >
-          <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+          <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
           <span>Redeem Steps</span>
         </button>
       )}
 
       {/* Instructions Button */}
       {hasInstructions && (
-        <button 
-          onClick={() => openModal("instructions")} 
-          className="flex-shrink-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-2.5 sm:px-3 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-xs sm:text-sm font-medium whitespace-nowrap"
+        <button
+          onClick={() => openModal("instructions")}
+          className="flex-shrink-0 flex items-center justify-center gap-0.5 sm:gap-1.5 py-1 px-1.5 sm:px-3 rounded-md border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-2xs sm:text-sm font-medium whitespace-nowrap"
         >
-          <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-500" />
+          <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
           <span className="sm:hidden">Info</span>
           <span className="hidden sm:inline">Important Instructions</span>
         </button>
@@ -1002,19 +1150,19 @@ useEffect(() => {
 
       {/* T & C Button */}
       {hasTerms && (
-        <button 
-          onClick={() => openModal("terms")} 
-          className="flex-shrink-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-2.5 sm:px-3 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-xs sm:text-sm font-medium whitespace-nowrap"
+        <button
+          onClick={() => openModal("terms")}
+          className="flex-shrink-0 flex items-center justify-center gap-0.5 sm:gap-1.5 py-1 px-1.5 sm:px-3 rounded-md border border-border bg-background hover:bg-accent hover:border-primary/50 transition-all text-2xs sm:text-sm font-medium whitespace-nowrap"
         >
-          <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500" />
+          <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
           <span className="sm:hidden">T & C</span>
           <span className="hidden sm:inline">Terms & Conditions</span>
         </button>
       )}
-      
     </div>
   </section>
 )}
+
 
 
 
@@ -1219,35 +1367,37 @@ useEffect(() => {
                   />
                 )}
 
-                {isFixedType && (
-                  <div className="mb-6">
-                    <label className="text-sm font-semibold block mb-2">
-                      Select Amount
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={amount}
-                        onChange={handleDropdownChange}
-                        className="w-full h-12 pl-4 pr-10 text-base border border-border rounded-lg bg-background appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                      >
-                        {brand.DenominationList &&
-                        brand.DenominationList.length > 0 ? (
-                          brand.DenominationList.map((denomination, index) => (
-                            <option
-                              key={`${denomination}-${index}`}
-                              value={denomination}
-                            >
-                              ₹{denomination.toLocaleString()}
-                            </option>
-                          ))
-                        ) : (
-                          <option value="">No denominations available</option>
-                        )}
-                      </select>
-                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-                    </div>
-                  </div>
-                )}
+{isFixedType && (
+  <div className="mb-6">
+    {/* Denomination Buttons */}
+    <div className="flex flex-wrap gap-3">
+
+      {brand.DenominationList && brand.DenominationList.length > 0 ? (
+        brand.DenominationList.map((denomination, index) => (
+          <button
+            key={`denomination-desktop-${index}`}
+            onClick={() => handleAmountButtonClick(denomination)}
+            className={`
+              flex-shrink-0 px-2.5 py-0.5 rounded-xl
+              text-base font-semibold
+              border-2 transition-all duration-200
+              ${
+                Number(amount) === denomination
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
+                  : "bg-background text-foreground border-border hover:border-primary hover:bg-accent"
+              }
+            `}
+          >
+            ₹{denomination.toLocaleString()}
+          </button>
+        ))
+      ) : (
+        <p className="text-sm text-muted-foreground">No denominations available</p>
+      )}
+    </div>
+  </div>
+)}
+
 
                 {isVariableType && (
                   <div className="mb-6">
@@ -1272,6 +1422,32 @@ useEffect(() => {
                         }`}
                       />
                     </div>
+                    
+                    {/* Price Slider - Enhanced UX */}
+                    <div className="mt-4 px-1">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}
+                        onChange={(e) => {
+                          const sliderValue = Number(e.target.value);
+                          const mappedAmount = mapSliderToAmount(sliderValue, minPrice, maxPrice);
+                          setAmount(mappedAmount.toString());
+                          setError("");
+                        }}
+                        className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb"
+                        style={{
+                          background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}%, hsl(var(--border)) ${mapAmountToSlider(Number(amount) || minPrice, minPrice, maxPrice)}%, hsl(var(--border)) 100%)`
+                        }}
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                        <span>₹{minPrice.toLocaleString()}</span>
+                        <span>₹{maxPrice.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    
                     {error && (
                       <div className="flex gap-2 bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-600 dark:text-red-400 text-sm mt-2">
                         <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />

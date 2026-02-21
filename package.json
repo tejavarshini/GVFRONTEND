@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "sitemap": "node scripts/generate-sitemap.js",
-    "build": "npm run sitemap && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -41,6 +40,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "@react-three/postprocessing": "^3.0.4",
+    "@rive-app/react-canvas": "^4.26.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.90.8",
     "axios": "^1.13.2",
@@ -52,7 +52,8 @@
     "date-fns": "^4.1.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "framer-motion": "^12.23.25",
+    "framer-motion": "^11.15.0",
+    "gsap": "^3.14.2",
     "input-otp": "^1.4.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.553.0",

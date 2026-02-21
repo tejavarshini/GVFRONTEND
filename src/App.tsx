@@ -13,6 +13,7 @@ import BrandDetailsPage from "./pages/BrandDetailsPage";
 import { Toaster } from "./components/ui/toaster";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { ThemeProvider } from "./contexts/SimpleTheme";
+import { GuideProvider } from "./contexts/GuideContext";
 import { useBrowserLocation } from "wouter/use-browser-location";
 import { AuthProvider } from "./contexts/AuthContext";
 import PaymentResult from "./pages/PaymentResult";
@@ -27,12 +28,6 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Onboarding from "./pages/Onboarding";
-import BlogPage from "./pages/BlogPage";
-import SingleBlogPage from "./pages/SingleBlogPage";
-import FAQPage from "./pages/FAQPage";
-import BrandValidity from "./pages/BrandValidity";
-import BulkPurchase from "./pages/BulkPurchase";
-import LoginIssues from "./pages/LoginIssues";
 
 function AppRoutes() {
   const [location] = useLocation();
@@ -51,7 +46,7 @@ function AppRoutes() {
 
     // Listen for storage events (cross-tab)
     window.addEventListener("storage", checkOnboarding);
-
+    
     return () => window.removeEventListener("storage", checkOnboarding);
   }, [location]);
 
@@ -85,12 +80,6 @@ function AppRoutes() {
       <Route path="/profile" component={Profile} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
-      <Route path="/blogs" component={BlogPage} />
-      <Route path="/blogs/:id" component={SingleBlogPage} />
-      <Route path="/faq" component={FAQPage} />
-      <Route path="/brand-validity" component={BrandValidity} />
-      <Route path="/bulk-purchase" component={BulkPurchase} />
-      <Route path="/login-issues" component={LoginIssues} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -100,15 +89,17 @@ export default function App() {
   return (
     <WouterRouter hook={useBrowserLocation}>
       <ThemeProvider>
-        <TooltipProvider>
-          <AuthProvider>
-            <ConfigProvider>
-              <AppRoutes />
-              <Toaster />
-              <GiftVoucherChatbot />
-            </ConfigProvider>
-          </AuthProvider>
-        </TooltipProvider>
+        <GuideProvider>
+          <TooltipProvider>
+            <AuthProvider>
+              <ConfigProvider>
+                <AppRoutes />
+                <Toaster />
+                {/* <GiftVoucherChatbot /> */}
+              </ConfigProvider>
+            </AuthProvider>
+          </TooltipProvider>
+        </GuideProvider>
       </ThemeProvider>
     </WouterRouter>
   );

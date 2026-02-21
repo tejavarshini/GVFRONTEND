@@ -1,7 +1,10 @@
 import axios from "axios";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-const BRAND_API_URL = import.meta.env.VITE_BRAND_API_URL;
+// In dev with no env set, use Vite proxy: requests to /api/* go to backend (e.g. localhost:8081).
+const BRAND_API_URL =
+  import.meta.env.VITE_BRAND_API_URL ??
+  (import.meta.env.DEV ? "/api" : undefined);
 const GIFTCARD_API_URL = import.meta.env.VITE_GIFTCARD_API_URL;
 
 // Common request interceptor function

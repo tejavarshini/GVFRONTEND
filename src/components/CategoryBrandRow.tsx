@@ -61,19 +61,20 @@ export default function CategoryBrandRow({ category, brands, isHighlighted = fal
         </p>
       </div>
 
-{/* MOBILE LAYOUT: 2-Column Grid with Vertical Scrolling - Matches Brands Page */}
+{/* MOBILE LAYOUT: Horizontal Scroll - No Vertical Stacking */}
 <div className="md:hidden">
   <div 
-    className="grid grid-cols-2 gap-3 sm:gap-4 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent"
+    className="flex flex-nowrap gap-3 sm:gap-4 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent scroll-smooth pb-2"
     style={{
       scrollBehavior: 'smooth',
     }}
   >
     {brands.map((brand) => (
-      <BrandCard 
-        key={brand.BrandId}
-        brand={brand} 
-      />
+      <div key={brand.BrandId} className="flex-shrink-0 w-[170px] min-w-[170px]">
+        <BrandCard 
+          brand={brand} 
+        />
+      </div>
     ))}
   </div>
 </div>

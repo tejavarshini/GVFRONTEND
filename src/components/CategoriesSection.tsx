@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBrands } from '@/hooks/useBrands';
@@ -8,6 +8,9 @@ import { Link } from 'wouter';
 // import BrandCard from '@/components/BrandCard'; // ADD THIS IMPORT
 import type { Brand } from '@/types/brand';
 import { Sparkles, Star, Tag, Award, MapPin } from 'lucide-react'; // ✅ Added MapPin
+import PremiumCategoryIcon, { type CategoryType } from '@/components/PremiumCategoryIcon';
+import LayeredCategorySection from '@/components/LayeredCategorySection';
+import { getCategoryTextColor } from '@/components/PremiumCategoryIcon';
 
 
 // Category icon mapping - Only 9 categories from backend
@@ -21,6 +24,68 @@ const CATEGORY_ICONS: Record<string, string> = {
   'Jewellery': '/icons/jewellery.png',
   'Entertainment': '/icons/entertainment.png',
   'Sports & Footwears': '/icons/sports.png',
+};
+
+// Map category names to PremiumCategoryIcon types
+const CATEGORY_TYPE_MAP: Record<string, CategoryType> = {
+  'Gaming': 'gaming',
+  'Fashion & Lifestyle': 'fashion',
+  'E-Commerce': 'ecommerce',
+  'Food & Beverages': 'food',
+  'Tour & Travel': 'travel',
+  'Wellness & Beauty': 'wellness',
+  'Jewellery': 'jewellery',
+  'Entertainment': 'entertainment',
+  'Sports & Footwears': 'sports',
+};
+
+// ✨ Mood-driven aura colors for each category
+const CATEGORY_MOOD_AURAS: Record<string, { glow: string; shadow: string; hoverGlow: string }> = {
+  'E-Commerce': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Food & Beverages': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Fashion & Lifestyle': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Tour & Travel': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Gaming': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Wellness & Beauty': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Jewellery': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Entertainment': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
+  'Sports & Footwears': { 
+    glow: 'rgba(147, 51, 234, 0.45)', 
+    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
+    hoverGlow: 'rgba(147, 51, 234, 0.75)'
+  },
 };
 
 // const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
@@ -37,6 +102,17 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 export default function CategoriesSection() {
   const { data: brands, isLoading, isError } = useBrands();
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  
+  // ✅ Scrollbar hint ref and state
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0); // 0-100% of scroll
+  const [isDraggingScrollbar, setIsDraggingScrollbar] = useState(false);
+  const [animationTrigger, setAnimationTrigger] = useState(0); // Trigger animation on category click
+  
+  // ✅ Layered scroll animation refs
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  
 const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
   // Auto-select first category from preselected categories
   const stored = localStorage.getItem("selectedCategories");
@@ -51,19 +127,35 @@ const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
   return null;
 });
 
-const [selectedFilter, setSelectedFilter] = useState<string | null>(() => {
-  // Auto-select Super Cashbacks if there's a preselected category
+// ✅ Per-category filter system: each category maintains its own filter
+const [categoryFilters, setCategoryFilters] = useState<Record<string, string | null>>(() => {
+  // Auto-select Super Cashbacks for preselected category
   const stored = localStorage.getItem("selectedCategories");
   if (stored) {
     try {
       const categories = JSON.parse(stored);
-      return categories.length > 0 ? "Super Cashbacks" : null;
+      if (categories.length > 0) {
+        return { [categories[0]]: "Super Cashbacks" };
+      }
     } catch  {
-      return null;
+      return {};
     }
   }
-  return null;
+  return {};
 });
+
+// Helper function to get filter for a specific category
+const getFilterForCategory = (categoryName: string): string | null => {
+  return categoryFilters[categoryName] || null;
+};
+
+// Helper function to set filter for a specific category
+const setFilterForCategory = (categoryName: string, filter: string | null) => {
+  setCategoryFilters(prev => ({
+    ...prev,
+    [categoryName]: filter
+  }));
+};
 
 
 // ✅ NEW: Geolocation state
@@ -71,6 +163,7 @@ const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | 
 const [locationError, setLocationError] = useState<string | null>(null);
 
 // ✅ NEW: Fetch nearby brands
+const selectedFilter = selectedCategory ? getFilterForCategory(selectedCategory) : null;
 const { 
   data: nearbyBrands, 
   isLoading: isLoadingNearby,
@@ -128,7 +221,7 @@ useEffect(() => {
   
   if (surpriseMeActive === "true" && surpriseMeCategory) {
     setSelectedCategory(surpriseMeCategory);
-    setSelectedFilter("Nearby Stores");
+    setFilterForCategory(surpriseMeCategory, "Nearby Stores");
     
     // Clear the surprise me flags
     localStorage.removeItem("surpriseMeActive");
@@ -196,70 +289,173 @@ useEffect(() => {
 
   }, [brands, preSelectedCategories]);
 
-  // Get filtered brands based on selected filter
-  const filteredBrandsByFilter = useMemo(() => {
-    if (!selectedCategory || !selectedFilter) return [];
-
-      // ✅ NEW: Handle "Nearby Stores" filter
-  if (selectedFilter === "Nearby Stores") {
-    return nearbyBrands || [];
-  }
-
-    const category = categoriesData.find((cat) => cat.name === selectedCategory);
-    if (!category) return [];
-
-    const brandsWithDiscount = category.brands.filter((brand) => brand.Discount);
-
-    // Filter based on discount ranges
-    const filtered = brandsWithDiscount.filter((brand) => {
-      const discount = parseFloat(brand.Discount?.replace('%', '') || '0');
-      const minPrice = brand.MinPrice || 0;
-      // const maxPrice = brand.MaxPrice || 0;
-
-      switch (selectedFilter) {
-        case "Super Cashbacks":
-          return discount > 0; // All brands with discount (no range limit)
-        case "Today's Picks":
-          return discount >= 10 && discount <= 15; // 10-15%
-        case "Under ₹500":
-          return minPrice > 0 && minPrice <= 500; // 5-10%
-        case "Under ₹1,000":
-          return minPrice > 500 && minPrice <= 1000; // 0-5%
-        case "Premium Picks":
-          return minPrice > 1000; // 0-3%
-        default:
-          return true;
-      }
-    });
-
-    return filtered
-      .sort((a, b) => {
-        const discountA = parseFloat(a.Discount?.replace('%', '') || '0');
-        const discountB = parseFloat(b.Discount?.replace('%', '') || '0');
-        return discountB - discountA;
-      })
-      .slice(0, 5);
-  }, [selectedCategory, selectedFilter, categoriesData, nearbyBrands]);
-
 const handleCategoryClick = (categoryName: string) => {
   // Only allow click if in viewAll mode OR category is pre-selected
   if (!viewAllMode && preSelectedCategories.length > 0 && !preSelectedCategories.includes(categoryName)) {
     return; // Do nothing for non-selected categories
   }
 
-  // Toggle: if same category clicked, deselect it
-  const newCategory = selectedCategory === categoryName ? null : categoryName;
-  setSelectedCategory(newCategory);
+  // If clicking same category, just scroll to it
+  if (selectedCategory === categoryName) {
+    setAnimationTrigger(prev => prev + 1);
+    
+    // ✅ Scroll to section smoothly with delay for rendering
+    setTimeout(() => {
+      const element = document.getElementById(`category-section-${categoryName}`);
+      if (element) {
+        const headerOffset = 100;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 300);
+    return;
+  }
+
+  // Different category clicked - update selection
+  setSelectedCategory(categoryName);
+  setAnimationTrigger(prev => prev + 1);
+  
+  // ✅ Clear filter for the newly selected category to show all brands by default
+  setFilterForCategory(categoryName, null);
   
   // ✅ Store clicked category for TopBrandsSection to pick up
-  if (newCategory) {
-    localStorage.setItem('highlightCategory', newCategory);
-    // No timestamp needed anymore since we want it to persist
-  } else {
-    localStorage.removeItem('highlightCategory');
-  }
+  localStorage.setItem('highlightCategory', categoryName);
+  
+  // ✅ Scroll to section smoothly with delay for re-sorting
+  setTimeout(() => {
+    const element = document.getElementById(`category-section-${categoryName}`);
+    if (element) {
+      const headerOffset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, 300);
 };
 
+// ✅ Handle scrollbar drag
+const handleScrollbarDrag = () => {
+  setIsDraggingScrollbar(true);
+  
+  if (!filterScrollRef.current) return;
+  
+  const container = filterScrollRef.current;
+  const scrollableWidth = container.scrollWidth - container.clientWidth;
+  const trackElement = container.parentElement?.querySelector('[class*="absolute bottom-0"]') as HTMLElement;
+  
+  if (!trackElement) return;
+  
+  const moveHandler = (moveEvent: MouseEvent | TouchEvent) => {
+    if (!filterScrollRef.current || !trackElement) return;
+    
+    const trackRect = trackElement.getBoundingClientRect();
+    const clientX = moveEvent instanceof MouseEvent ? moveEvent.clientX : moveEvent.touches[0].clientX;
+    const relativeX = clientX - trackRect.left;
+    
+    // Calculate percentage within track (0-100%)
+    const percentage = Math.max(0, Math.min(100, (relativeX / trackRect.width) * 100));
+    
+    // Convert percentage to scroll position
+    const newScrollLeft = (percentage / 100) * scrollableWidth;
+    
+    container.scrollLeft = newScrollLeft;
+    setScrollProgress(percentage);
+  };
+  
+  const endHandler = () => {
+    setIsDraggingScrollbar(false);
+    document.removeEventListener('mousemove', moveHandler);
+    document.removeEventListener('touchmove', moveHandler);
+    document.removeEventListener('mouseup', endHandler);
+    document.removeEventListener('touchend', endHandler);
+  };
+  
+  document.addEventListener('mousemove', moveHandler);
+  document.addEventListener('touchmove', moveHandler);
+  document.addEventListener('mouseup', endHandler);
+  document.addEventListener('touchend', endHandler);
+};
+
+// ✅ Scrollbar hint animation - nudges scroll container to show more content
+const triggerScrollHint = () => {
+  const container = filterScrollRef.current;
+  if (!container) return;
+  
+  // Micro motion - subtle nudge that ends with partial next chip visible
+  // Scroll further right first (40px)
+  container.scrollTo({
+    left: 40,
+    behavior: 'smooth',
+  });
+  
+  // Settle back to 25px - shows partial next chip, indicating more content
+  setTimeout(() => {
+    container.scrollTo({
+      left: 25,
+      behavior: 'smooth',
+    });
+  }, 300);
+};
+
+// ✅ Trigger scroll hint when category is clicked (including same category)
+useEffect(() => {
+  if (animationTrigger > 0) {
+    const hintTimeout = setTimeout(() => {
+      triggerScrollHint();
+    }, 250);
+    return () => clearTimeout(hintTimeout);
+  }
+}, [animationTrigger]); // Only watch animationTrigger
+
+// ✅ Trigger animation on initial page load if category is preselected
+useEffect(() => {
+  if (selectedCategory) {
+    const initialTimeout = setTimeout(() => {
+      setAnimationTrigger(1); // Trigger once on mount after delay
+    }, 400);
+    return () => clearTimeout(initialTimeout);
+  }
+}, []); // Empty deps - run only once on mount
+
+// ✅ Track scroll position changes
+useEffect(() => {
+  const container = filterScrollRef.current;
+  if (!container) return;
+  
+  // Create scroll handler that updates progress
+  const scrollHandler = () => {
+    const scrollLeft = container.scrollLeft;
+    const scrollableWidth = container.scrollWidth - container.clientWidth;
+    
+    if (scrollableWidth <= 0) {
+      setScrollProgress(0);
+      return;
+    }
+    
+    const progress = (scrollLeft / scrollableWidth) * 100;
+    setScrollProgress(Math.min(100, Math.max(0, progress)));
+  };
+  
+  // Attach listener
+  container.addEventListener('scroll', scrollHandler, { passive: true });
+  
+  // Initial calculation
+  scrollHandler();
+  
+  // Cleanup
+  return () => {
+    container.removeEventListener('scroll', scrollHandler);
+  };
+}, [filterScrollRef]);
 
 
   const handleTakeTourAgain = () => {
@@ -318,61 +514,90 @@ const handleCategoryClick = (categoryName: string) => {
 
   return (
     <>
-      <section className="pt-0 pb-4 sm:pb-6 lg:pb-8">
+      <section className="pt-0 pb-2 sm:pb-3 lg:pb-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-2 sm:mb-3 text-gray-900">
                     Hot Deals by Category
                 </h2> */}
 
-          {/* Categories Grid - 3 columns on all screens */}
+          {/* Clean Minimal Category Cards */}
           <motion.div
-            className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 scrollbar-hide"
+            className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 scrollbar-hide"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
             {categoriesData.map((category) => {
               const isPreSelected = preSelectedCategories.includes(category.name);
               const isDisabled = !viewAllMode && preSelectedCategories.length > 0 && !isPreSelected;
+              const isActive = selectedCategory === category.name;
+              const isHovered = hoveredCategory === category.name;
+              const categoryType = CATEGORY_TYPE_MAP[category.name] || 'ecommerce';
+              const moodAura = CATEGORY_MOOD_AURAS[category.name] || CATEGORY_MOOD_AURAS['E-Commerce'];
 
               return (
                 <motion.button
                   key={category.name}
                   onClick={() => handleCategoryClick(category.name)}
+                  onMouseEnter={() => setHoveredCategory(category.name)}
+                  onMouseLeave={() => setHoveredCategory(null)}
                   disabled={isDisabled}
-                  className={`flex flex-col items-center gap-2 transition-all duration-300 focus:outline-none flex-shrink-0 w-[72px] ${isDisabled
-                      ? "opacity-30 cursor-not-allowed grayscale"
-                      : "hover:scale-105 cursor-pointer"
-                    }`}
+                  className="flex flex-col items-center gap-2 transition-all duration-300 focus:outline-none flex-shrink-0 group"
                   whileTap={{ scale: isDisabled ? 1 : 0.95 }}
+                  whileHover={!isDisabled ? { scale: 1.03, y: -4 } : {}}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
-
-                  {/* Category Image with overlay text */}
-                  <div className={`relative w-[72px] h-[72px] rounded-2xl overflow-hidden transition-all border-[3px] ${selectedCategory === category.name
-                    ? 'border-purple-700 shadow-[0_0_15px_rgba(139,92,246,0.4)]'
-                    : 'border-white/10'
-                    }`}>
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/icons/default.png';
-                      }}
-                    />
-                    {/* Dark overlay */}
-                    {/* <div className="absolute inset-0 bg-black bg-opacity-40"></div> */}
-
-                    {/* Category Name on image */}
-                    {/* <h3 className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-white text-center px-2 lg:text-sm">
-                    {CATEGORY_DISPLAY_NAMES[category.name] || category.name}
-                  </h3> */}
-
-                    {selectedCategory === category.name && (
-                      <motion.div
-                        layoutId="activeCategory"
-                        className="absolute inset-0 rounded-2xl ring-3 ring-purple-600 pointer-events-none"
+                  {/* Premium Card with mood-driven aura */}
+                  <div 
+                    className={`w-[100px] h-[100px] rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 relative ${
+                    isActive
+                      ? 'bg-white dark:bg-slate-900/60 border-2 border-purple-300 dark:border-purple-500/50 shadow-[0_4px_16px_rgba(0,0,0,0.08)] dark:shadow-purple-900/30'
+                      : isDisabled
+                      ? 'bg-gray-100 dark:bg-slate-800/40 border-2 border-gray-200 dark:border-slate-700/40 opacity-40'
+                      : 'bg-white dark:bg-slate-800/40 border-2 border-gray-200/70 dark:border-slate-700/40 shadow-[0_4px_12px_rgba(0,0,0,0.06)] dark:shadow-black/20 group-hover:border-gray-300 dark:group-hover:border-slate-600 group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:group-hover:shadow-black/40'
+                    }`}
+                    style={{
+                      boxShadow: !isDisabled && isHovered 
+                        ? `${moodAura.shadow}, 0 8px 20px rgba(0,0,0,0.1)` 
+                        : !isDisabled && !isActive
+                        ? `0 4px 12px rgba(0,0,0,0.06)`
+                        : undefined
+                    }}
+                  >
+                    {/* Mood-driven aura background glow */}
+                    {!isDisabled && (
+                      <div 
+                        className="absolute inset-0 rounded-2xl transition-all duration-300 -z-10"
+                        style={{
+                          background: isHovered 
+                            ? `radial-gradient(circle at center, ${moodAura.hoverGlow}, transparent 65%)`
+                            : `radial-gradient(circle at center, ${moodAura.glow}, transparent 65%)`,
+                          filter: isHovered ? 'blur(20px)' : 'blur(16px)',
+                          opacity: 1,
+                          transform: 'scale(1.3)',
+                        }}
                       />
                     )}
+                    
+                    {/* Premium 3D Illustration Icon */}
+                    <PremiumCategoryIcon 
+                      type={categoryType}
+                      id={category.name.toLowerCase().replace(/\s+/g, '-')}
+                      isActive={isActive}
+                      isHovered={isHovered && !isDisabled}
+                    />
+                  </div>
+                  
+                  {/* Category Label - Clean typography */}
+                  <div className="text-center min-w-[100px] mt-2">
+                    <p className={`text-xs font-bold tracking-wide leading-tight line-clamp-2 transition-colors duration-300 ${
+                      isActive 
+                        ? getCategoryTextColor(categoryType)
+                        : isDisabled
+                        ? 'text-gray-400 dark:text-slate-500'
+                        : 'text-gray-700 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-slate-100'
+                    }`}>
+                      {category.name}
+                    </p>
                   </div>
                 </motion.button>
               );
@@ -380,34 +605,38 @@ const handleCategoryClick = (categoryName: string) => {
 
           </motion.div>
 
-          {/* View All Button - Show when categories are filtered */}
-<div className="flex justify-center gap-3 mt-4">
-  {!viewAllMode && preSelectedCategories.length > 0 && (
-    <button
-      onClick={() => {
-        setViewAllMode(true);
-        setPreSelectedCategories([]);
-        localStorage.removeItem("selectedCategories");
-      }}
-      className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm font-medium transition-colors shadow-lg whitespace-nowrap"
-    >
-      View All Categories
-    </button>
-  )}
-  <button
-    onClick={handleTakeTourAgain}
-    className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm font-medium transition-colors shadow-lg whitespace-nowrap"
-  >
-    Take a Tour Again
-  </button>
-</div>
+          {/* View All Button - Clean styling */}
+          <div className="flex justify-center gap-3 mt-5">
+            {!viewAllMode && preSelectedCategories.length > 0 && (
+              <motion.button
+                onClick={() => {
+                  setViewAllMode(true);
+                  setPreSelectedCategories([]);
+                  localStorage.removeItem("selectedCategories");
+                }}
+                className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-300 shadow-sm shadow-purple-900/20 hover:shadow-md hover:shadow-purple-900/30 active:scale-95 whitespace-nowrap"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                View All Categories
+              </motion.button>
+            )}
+            <motion.button
+              onClick={handleTakeTourAgain}
+              className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-300 shadow-sm shadow-purple-900/20 hover:shadow-md hover:shadow-purple-900/30 active:scale-95 whitespace-nowrap"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Take a Tour Again
+            </motion.button>
+          </div>
 
 
 
 
 
 
-          {/* Filter Tags - Show only when category is selected */}
+          {/* Filter Tags - Enhanced Interactive Design */}
           <AnimatePresence mode="wait">
             {selectedCategory && (
               <motion.div
@@ -415,54 +644,223 @@ const handleCategoryClick = (categoryName: string) => {
                 initial={{ opacity: 0, y: -15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
-                className="mt-2"
+                className="mt-3"
               >
-                <div className="border border-gray-300 rounded-2xl px-3 py-2 bg-black bg-opacity-50">
-                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-                    {/* All Brands - Link to brands page */}
-                    {/* <Link
-                      href="/brands"
-                      className="px-4 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors flex-shrink-0 border border-gray-300 bg-transparent text-gray-200 hover:bg-gray-800 flex items-center gap-1.5"
-                    >
-                      <Tag className="w-3 h-3" />
-                      All Brands
-                    </Link> */}
+                {/* Section Header */}
+                <div className="flex items-center gap-2 mb-2 px-1">
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    Recommended For You
+                  </h3>
+                  <motion.div
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-purple-500"
+                  >
+                    →
+                  </motion.div>
+                </div>
 
+                <div className="relative border border-purple-200/60 dark:border-purple-500/30 rounded-xl px-2.5 py-2.5 bg-gradient-to-br from-purple-50/80 via-white to-white dark:from-purple-950/20 dark:via-slate-800/20 dark:to-slate-800/20 shadow-sm overflow-hidden">
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-100/30 to-transparent dark:via-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Interactive Scrollbar Indicator - More Prominent */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-b-lg overflow-hidden group">
+                    {/* Scrollbar thumb */}
+                    <motion.div
+                      className={`h-full rounded-full transition-all duration-200 absolute left-0 top-0 ${
+                        isDraggingScrollbar 
+                          ? 'bg-purple-600 dark:bg-purple-400 shadow-lg' 
+                          : 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 dark:from-purple-500 dark:via-purple-400 dark:to-purple-500 group-hover:shadow-md'
+                      } cursor-grab active:cursor-grabbing`}
+                      style={{
+                        width: '20%',
+                        minWidth: '30px',
+                      }}
+                      animate={{
+                        left: `${(scrollProgress / 100) * 80}%`,
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      onMouseDown={handleScrollbarDrag}
+                      onTouchStart={handleScrollbarDrag}
+                    />
+                  </div>
+                  
+                  {/* Right-side gradient fade with scroll hint */}
+                  <div 
+                    className="absolute top-0 right-0 bottom-1 w-20 pointer-events-none z-10 bg-gradient-to-l from-purple-50/90 via-purple-50/60 to-transparent dark:from-slate-800/90 dark:via-slate-800/60 rounded-r-xl transition-opacity duration-300 flex items-center justify-end pr-2"
+                    style={{
+                      opacity: scrollProgress >= 95 ? 0 : 1
+                    }}
+                  >
+                    <motion.div
+                      animate={{ 
+                        x: [0, 5, 0],
+                        opacity: [0.6, 1, 0.6]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                      className="text-purple-500 dark:text-purple-400 text-lg font-bold"
+                    >
+                      ›
+                    </motion.div>
+                  </div>
+                  
+                  <div ref={filterScrollRef} className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth pr-20">
                     {[
                       { name: "Super Cashbacks", icon: Sparkles },
                       { name: "Today's Picks", icon: Star },
                       { name: "Under ₹500", icon: Tag },
                       { name: "Under ₹1,000", icon: Tag },
-                      // { name: "Last-Minute", icon: Clock },
                       { name: "Premium Picks", icon: Award },
-                      { name: "Nearby Stores", icon: MapPin } // ✅ NEW
+                      { name: "Nearby Stores", icon: MapPin }
                     ].map((filter, index) => {
                       const Icon = filter.icon;
-                      const isActive = selectedFilter === filter.name;
+                      // ✅ Check if this filter is active for the SELECTED category only
+                      const isActive = selectedCategory ? getFilterForCategory(selectedCategory) === filter.name : false;
 
                       return (
                         <motion.button
                           key={filter.name}
-                          onClick={() => setSelectedFilter(selectedFilter === filter.name ? null : filter.name)}
-className={`px-4 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors flex-shrink-0 border flex items-center gap-1.5 ${
-  isActive
-    ? // Active state
-      'border-purple-500/50 shadow-[0_0_8px_rgba(139,92,246,0.3)] ' +
-      'bg-purple-500/30 text-white ' + // Dark mode active
-      'dark:bg-purple-500/30 dark:border-purple-500/50 dark:text-white ' +
-      'light:bg-white light:border-purple-500 light:text-purple-600 light:shadow-none' // Light mode active
-    : // Inactive state
-      'dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 ' + // Dark mode inactive
-      'border-gray-300 bg-gray-100 text-gray-600 hover:bg-gray-200' // Light mode inactive
-}`}
-
+                          onClick={() => {
+                            if (selectedCategory) {
+                              const currentFilter = getFilterForCategory(selectedCategory);
+                              setFilterForCategory(
+                                selectedCategory, 
+                                currentFilter === filter.name ? null : filter.name
+                              );
+                            }
+                          }}
+                          className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 flex-shrink-0 border-2 flex items-center gap-1.5 relative z-20 overflow-hidden ${
+                            isActive
+                              ? 'border-purple-400 bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 text-white shadow-lg shadow-purple-500/50'
+                              : 'border-purple-200 dark:border-purple-700/50 bg-white dark:bg-slate-800/40 text-gray-700 dark:text-slate-300 hover:border-purple-300 dark:hover:border-purple-600/60 hover:bg-purple-50 dark:hover:bg-slate-700/50 hover:shadow-md hover:-translate-y-0.5'
+                          }`}
+                          style={
+                            isActive
+                              ? {
+                                  transform: 'translateY(-2px) scale(1.05)'
+                                }
+                              : undefined
+                          }
+                          whileHover={
+                            !isActive ? {
+                              boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
+                            } : undefined
+                          }
                           whileTap={{ scale: 0.95 }}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: index * 0.05 }}
+                          initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          transition={{ delay: index * 0.05, type: "spring", stiffness: 300, damping: 20 }}
                         >
-                          <Icon className="w-3 h-3" />
+                          {/* Enhanced Icon with unique animations per filter type */}
+                          <motion.div
+                            whileHover={
+                              !isActive
+                                ? filter.name === "Super Cashbacks"
+                                  ? { rotate: [0, 10, -10, 0], scale: 1.1 }
+                                  : filter.name === "Today's Picks"
+                                  ? { scale: 1.2, rotate: [0, 20, -20, 0] }
+                                  : filter.name === "Premium Picks"
+                                  ? { scale: 1.15, y: -2 }
+                                  : filter.name === "Nearby Stores"
+                                  ? { scale: 1.15, y: [-2, -4, -2] }
+                                  : { scale: 1.15, rotate: [0, 5, -5, 0] }
+                                : undefined
+                            }
+                            animate={
+                              isActive
+                                ? filter.name === "Super Cashbacks"
+                                  ? { rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }
+                                  : filter.name === "Today's Picks"
+                                  ? { scale: [1, 1.15, 1], rotate: [0, 15, 0] }
+                                  : filter.name === "Premium Picks"
+                                  ? { scale: [1, 1.1, 1], y: [0, -2, 0] }
+                                  : filter.name === "Nearby Stores"
+                                  ? { scale: [1, 1.15, 1], y: [0, -3, 0] }
+                                  : { scale: [1, 1.1, 1] }
+                                : {}
+                            }
+                            transition={{
+                              duration: isActive ? 0.8 : 0.3,
+                              repeat: isActive ? Infinity : 0,
+                              repeatDelay: 0.5
+                            }}
+                            className={`relative ${isActive ? 'drop-shadow-lg' : ''}`}
+                          >
+                            {/* Colorful background glow for active icons */}
+                            {isActive && (
+                              <>
+                                <motion.div
+                                  className="absolute inset-0 rounded-full blur-md"
+                                  animate={{
+                                    backgroundColor: [
+                                      'rgba(255, 255, 255, 0.3)',
+                                      'rgba(255, 255, 255, 0.6)',
+                                      'rgba(255, 255, 255, 0.3)'
+                                    ]
+                                  }}
+                                  transition={{
+                                    duration: 1.5,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                  }}
+                                />
+                                {/* Extra sparkle for Super Cashbacks */}
+                                {filter.name === "Super Cashbacks" && (
+                                  <>
+                                    <motion.div
+                                      className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-yellow-300 rounded-full"
+                                      animate={{
+                                        scale: [0, 1.5, 0],
+                                        opacity: [0, 1, 0]
+                                      }}
+                                      transition={{
+                                        duration: 1.2,
+                                        repeat: Infinity,
+                                        repeatDelay: 0.3
+                                      }}
+                                    />
+                                    <motion.div
+                                      className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-yellow-300 rounded-full"
+                                      animate={{
+                                        scale: [0, 1.5, 0],
+                                        opacity: [0, 1, 0]
+                                      }}
+                                      transition={{
+                                        duration: 1.2,
+                                        repeat: Infinity,
+                                        delay: 0.6,
+                                        repeatDelay: 0.3
+                                      }}
+                                    />
+                                  </>
+                                )}
+                              </>
+                            )}
+                            <Icon 
+                              className={`w-4 h-4 relative z-10 ${
+                                isActive 
+                                  ? 'text-white drop-shadow-md' 
+                                  : 'text-purple-500 dark:text-purple-400'
+                              }`} 
+                            />
+                          </motion.div>
+                          
                           {filter.name}
+                          
+                          {/* Active indicator badge */}
+                          {isActive && (
+                            <motion.div
+                              className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full border border-white shadow-lg"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: [1, 1.2, 1] }}
+                              transition={{ duration: 0.6, repeat: Infinity }}
+                            />
+                          )}
                         </motion.button>
                       );
                     })}
@@ -475,120 +873,257 @@ className={`px-4 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors
         </div>
       </section>
 
-      {/* Top Discounted Brands - Inline Below Categories */}
-      <AnimatePresence mode="wait">
-        {selectedCategory && selectedFilter && filteredBrandsByFilter.length > 0 && (
-          <motion.div
-            key={`deals-${selectedCategory}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="pt-0 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
-          >
-            {/* ✅ Loading State for Nearby Stores */}
-{selectedFilter === "Nearby Stores" && isLoadingNearby && (
-  <div className="text-center py-4">
-    <p className="text-sm text-gray-500">Finding nearby stores...</p>
-  </div>
-)}
+      {/* Layered Sticky Category Sections */}
+      {categoriesData
+        // Sort categories: selected category goes FIRST (lowest z-index, appears as first layer)
+        .sort((a, b) => {
+          if (a.name === selectedCategory) return -1;  // Selected goes to start
+          if (b.name === selectedCategory) return 1;   // Selected goes to start
+          return 0; // Keep others in original order
+        })
+        .map((category, sectionIndex, array) => {
+          // ✅ Only apply filter if this is the SELECTED category, otherwise show all brands
+          const categoryFilter = category.name === selectedCategory 
+            ? getFilterForCategory(category.name) 
+            : null;
+          
+          // If no filter selected, show all brands with discounts (up to 10)
+          // If filter selected, apply filter logic
+          let brandsForThisCategory;
+          
+          if (!categoryFilter) {
+            // No filter: show all brands with discount, sorted by discount
+            brandsForThisCategory = category.brands
+              .filter((brand) => brand.Discount)
+              .sort((a, b) => {
+                const discountA = parseFloat(a.Discount?.replace('%', '') || '0');
+                const discountB = parseFloat(b.Discount?.replace('%', '') || '0');
+                return discountB - discountA;
+              })
+              .slice(0, 10);
+          } else {
+            // Filter selected: apply filter logic
+            brandsForThisCategory = category.brands
+              .filter((brand) => brand.Discount)
+              .filter((brand) => {
+                const discount = parseFloat(brand.Discount?.replace('%', '') || '0');
+                const minPrice = brand.MinPrice || 0;
 
-{/* ✅ Location Error */}
-{selectedFilter === "Nearby Stores" && locationError && (
-  <div className="text-center py-4">
-    <p className="text-sm text-red-500">{locationError}</p>
-  </div>
-)}
+                if (categoryFilter === "Nearby Stores") {
+                  return nearbyBrands?.some((nb: any) => 
+                    (nb.BrandId || nb.brandId) === brand.BrandId
+                  );
+                }
 
-{/* ✅ No Results */}
-{selectedFilter === "Nearby Stores" && !isLoadingNearby && !locationError && filteredBrandsByFilter.length === 0 && (
-  <div className="text-center py-4">
-    <p className="text-sm text-gray-500">No nearby stores found in this category</p>
-  </div>
-)}
+                switch (categoryFilter) {
+                  case "Super Cashbacks":
+                    return discount > 0;
+                  case "Today's Picks":
+                    return discount >= 10 && discount <= 15;
+                  case "Under ₹500":
+                    return minPrice > 0 && minPrice <= 500;
+                  case "Under ₹1,000":
+                    return minPrice > 500 && minPrice <= 1000;
+                  case "Premium Picks":
+                    return minPrice > 1000;
+                  default:
+                    return true;
+                }
+              })
+              .sort((a, b) => {
+                const discountA = parseFloat(a.Discount?.replace('%', '') || '0');
+                const discountB = parseFloat(b.Discount?.replace('%', '') || '0');
+                return discountB - discountA;
+              })
+              .slice(0, 5);
+          }
 
-<h3 className="text-sm font-semibold text-gray-700 mb-2">
-  {selectedFilter === "Super Cashbacks" 
-    ? "Top Deals" 
-    : selectedFilter === "Nearby Stores"
-    ? "Nearby Brands"
-    : selectedFilter} in {selectedCategory}
-</h3>
+          const displayBrands = categoryFilter === "Nearby Stores" 
+            ? (nearbyBrands || []) 
+            : brandsForThisCategory;
 
-            <div className="flex gap-4 overflow-x-auto pb-2">
+          if (displayBrands.length === 0) return null;
 
-{filteredBrandsByFilter.map((brand: any, index) => {
-  // ✅ Handle both Brand and NearbyBrand types
-  const brandId = brand.BrandId || brand.brandId;
-  const brandName = brand.BrandName || brand.brandName;
-  const brandImages = brand.Images || brand.images;
-  const discount = brand.Discount;
-  const distanceKm = brand.nearestDistanceKm;
-
-  return (
-    <motion.div
-      key={brandId}
-      initial={{ opacity: 0, scale: 0.8 }}
-
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.25,
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25
+          return (
+            <LayeredCategorySection
+              key={category.name}
+              index={sectionIndex}
+              isLast={sectionIndex === array.length - 1}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`deals-${category.name}`}
+                  ref={(el) => {
+                    if (el && category.name) {
+                      sectionRefs.current[category.name] = el;
+                    }
                   }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  id={`category-section-${category.name}`}
+                  className="pt-0 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-24"
                 >
-<Link
-  href={`/brands/${brandId}${selectedFilter === 'Nearby Stores' ? '?autoFindStores=true' : ''}`}
-  className="flex flex-col items-center gap-2 hover:scale-105 transition-all flex-shrink-0"
->
-
-                    {/* Brand Image - Same size as category */}
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center p-3 border-2 border-purple-200 lg:w-20 lg:h-20">
-                        <img
-                          src={
-                            brandImages?.text ||
-                            brandImages?.thumbnail ||
-                            brandImages?.featured ||
-                            brandImages?.main ||
-                            brandImages?.raw ||
-                            '/brand-placeholder.png'
-                          }
-                          alt={brandName}
-                          className="w-full h-full object-contain"
-                          onError={(e) => {
-                            e.currentTarget.src = '/brand-placeholder.png';
-                          }}
-                        />
-                      </div>
-                      {/* Discount Badge */}
-                      {discount && (
-                        <div className="absolute top-0 -right-1 bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                          {parseFloat(discount).toFixed(1)}%
-                        </div>
-                      )}
-
+                  {/* ✅ Loading State for Nearby Stores */}
+                  {categoryFilter === "Nearby Stores" && isLoadingNearby && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-gray-500">Finding nearby stores...</p>
                     </div>
-                    {/* Brand Name */}
-                    <p className="text-[10px] font-medium text-center line-clamp-2 w-16 lg:w-20 lg:text-xs">
-                      {brandName}
-                    </p>
-                    {/* Distance (for nearby stores) */}
-{distanceKm !== undefined && (
-  <p className="text-[9px] text-gray-500 text-center mt-0.5">
-    📍 {distanceKm.toFixed(1)}km
-  </p>
-)}
-        </Link>
-      </motion.div>
-    );
-  })}
+                  )}
 
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  {/* ✅ Location Error */}
+                  {categoryFilter === "Nearby Stores" && locationError && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-red-500">{locationError}</p>
+                    </div>
+                  )}
+
+                  {/* ✅ No Results */}
+                  {categoryFilter === "Nearby Stores" && !isLoadingNearby && !locationError && displayBrands.length === 0 && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-gray-500">No nearby stores found in this category</p>
+                    </div>
+                  )}
+
+                  {/* ✅ Horizontal Scroll Container */}
+                  {displayBrands.length > 0 && (
+                    <div className="bg-white dark:bg-slate-800/20 border border-gray-200 dark:border-slate-700/40 rounded-xl p-3 relative">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                          {!categoryFilter
+                            ? `All Brands in ${category.name}`
+                            : categoryFilter === "Super Cashbacks" 
+                            ? "Top Deals" 
+                            : categoryFilter === "Nearby Stores"
+                            ? "Nearby Brands"
+                            : categoryFilter} {categoryFilter ? `in ${category.name}` : ''}
+                        </h3>
+                        
+                        {/* Close button - only shows if this is the selected category */}
+                        {selectedCategory === category.name && (
+                          <button
+                            onClick={() => {
+                              setSelectedCategory(null);
+                              setFilterForCategory(category.name, null);
+                            }}
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded-md hover:bg-gray-100 dark:hover:bg-slate-700/30 text-lg"
+                            aria-label="Deselect category"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Right-side gradient fade overlay */}
+                      <div className="absolute top-0 right-0 bottom-0 w-24 pointer-events-none z-10 bg-gradient-to-l from-white dark:from-slate-800/20 via-white/80 dark:via-slate-800/10 to-transparent" />
+
+                      {/* ✅ Direct wrapper with flex flex-nowrap + overflow-x-auto */}
+                      <div className="flex flex-nowrap gap-4 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 -mx-3 px-3 snap-x snap-mandatory">
+                        {displayBrands.map((brand: any, index) => {
+
+  // ✅ Handle both Brand and NearbyBrand types
+                          const brandId = brand.BrandId || brand.brandId;
+                          const brandName = brand.BrandName || brand.brandName;
+                          const brandImages = brand.Images || brand.images;
+                          const discount = brand.Discount;
+                          const distanceKm = brand.nearestDistanceKm;
+
+                          return (
+                            <motion.div
+                              key={brandId}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{
+                                duration: 0.25,
+                                delay: index * 0.1,
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 25
+                              }}
+                              className="relative z-20 flex-shrink-0 w-[170px] min-w-[170px] snap-start"
+                            >
+                              <Link
+                                href={`/brands/${brandId}${categoryFilter === 'Nearby Stores' ? '?autoFindStores=true' : ''}`}
+                                className="block h-full"
+                              >
+
+                                {/* Full Brand Card */}
+                                <div className="bg-neutral-50/90 dark:bg-neutral-800/70 border border-neutral-300/40 dark:border-neutral-600/40 rounded-2xl p-3 h-full hover:-translate-y-1 hover:shadow-xl transition-all duration-300 relative">
+                      
+                                  {/* Cashback Badge */}
+                                  {discount && parseFloat(discount) > 0 && (
+                                    <div className="absolute top-2 right-2 z-10">
+                                      <div className="bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg flex items-center gap-1">
+                                        ⭐ {parseFloat(discount).toFixed(1)}%
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  <div className="flex flex-col items-center text-center space-y-2">
+                                    {/* Brand Image */}
+                                    <div className="w-20 h-20 flex items-center justify-center flex-shrink-0">
+                                      <img
+                                        src={
+                                          brandImages?.text ||
+                                          brandImages?.thumbnail ||
+                                          brandImages?.featured ||
+                                          brandImages?.main ||
+                                          brandImages?.raw ||
+                                          '/brand-placeholder.png'
+                                        }
+                                        alt={brandName}
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => {
+                                          e.currentTarget.src = '/brand-placeholder.png';
+                                        }}
+                                      />
+                                    </div>
+
+                                    {/* Brand Name */}
+                                    <div className="min-h-[2.5rem] flex items-center justify-center w-full">
+                                      <h3 className="font-bold text-xs text-neutral-900 dark:text-neutral-100 line-clamp-2">
+                                        {brandName}
+                                      </h3>
+                                    </div>
+
+                                    {/* Category Tag */}
+                                    <div className="min-h-[1.5rem] flex items-center justify-center">
+                                      <span className="text-[10px] px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded-full whitespace-nowrap">
+                                        {category.name}
+                                      </span>
+                                    </div>
+
+                                    {/* Distance (for nearby stores) */}
+                                    {distanceKm !== undefined && (
+                                      <p className="text-xs text-gray-500 dark:text-slate-400 text-center">
+                                        📍 {distanceKm.toFixed(1)}km
+                                      </p>
+                                    )}
+
+                                    {/* Quick Buy Button */}
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                      }}
+                                      className="w-full mt-2 bg-primary text-white py-1.5 rounded-md font-semibold text-[10px] flex items-center justify-center gap-1 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm"
+                                    >
+                                      🛒 Quick Buy
+                                    </button>
+                                  </div>
+                                </div>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </LayeredCategorySection>
+          );
+        })}
 
     </>
   );

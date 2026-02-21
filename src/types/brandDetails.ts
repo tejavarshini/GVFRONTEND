@@ -45,7 +45,7 @@ export interface BrandDetailsParsed {
   DenominationList: number[];
 
   ImportantInstruction: Record<string, string>;
-  RedeemSteps: Array<{ title: string; image?: string }>;
+  RedeemSteps: Array<{ title: string; image?: string; description?: string }>;
   Tnc: Record<string, string> | string;
 
   CreatedAt: string | null;

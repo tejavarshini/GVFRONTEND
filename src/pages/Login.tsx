@@ -1,31 +1,32 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
-import { AlertCircle, Smartphone } from "lucide-react";
+import { AlertCircle, Smartphone, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logoImg from "@/attached_assets/generated_images/logo.png";
-import { useSendOtp } from "@/hooks/useSendOtp";
 import { useLoginWithOtp } from "@/hooks/useLoginWithOtp";
+import { useSendOtp } from "@/hooks/useSendOtp";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const searchParams = useSearch();
   const isSessionExpired = searchParams.includes("session=expired");
 
-  const [mobile, setMobile] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [mobileError, setMobileError] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpInfoMessage, setOtpInfoMessage] = useState("");
+  const [reqId, setReqId] = useState("");
+  const [step, setStep] = useState<"mobile" | "otp">("mobile");
+  const [countdown, setCountdown] = useState(0);
 
   const sendOtpMutation = useSendOtp();
-  const loginWithOtpMutation = useLoginWithOtp();
+  const loginMutation = useLoginWithOtp();
   const { setUser } = useAuthContext();
   const { toast } = useToast();
-  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (isSessionExpired) {
@@ -37,102 +38,79 @@ export default function Login() {
     }
   }, [isSessionExpired]);
 
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
   const validateMobile = (mobile: string) => {
     return /^[0-9]{10}$/.test(mobile);
   };
 
-  const validateOtp = (otp: string) => {
-    return /^[0-9]{4,6}$/.test(otp);
+  const validateMobileForm = () => {
+    if (!mobileNumber.trim()) {
+      setError("Mobile number is required");
+      return false;
+    }
+
+    if (!validateMobile(mobileNumber)) {
+      setError("Please enter a valid 10-digit mobile number");
+      return false;
+    }
+
+    return true;
   };
 
-  const handleSendOtp = (e: React.MouseEvent) => {
+  const validateOtpForm = () => {
+    if (!otp || otp.length !== 6) {
+      setError("Please enter a valid 6-digit OTP");
+      return false;
+    }
+    return true;
+  };
+
+  const isLoading = sendOtpMutation.isPending || loginMutation.isPending;
+
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setOtpInfoMessage("");
-    setOtpSent(false);
-    setOtp("");
 
-    if (!mobile.trim()) {
-      setMobileError("Mobile number is required");
-      return;
-    }
+    if (!validateMobileForm()) return;
 
-    if (!validateMobile(mobile)) {
-      setMobileError("Please enter a valid 10-digit mobile number");
-      return;
-    }
-
-    setMobileError("");
-    console.log("Sending:", { mobileNumber: mobile, email: email.trim() });
-
-    sendOtpMutation.mutate({ mobileNumber: mobile, email: email.trim() }, {
+    sendOtpMutation.mutate(mobileNumber, {
       onSuccess: (data) => {
-        if (data.notRegistered) {
-          setError("Mobile number not registered. Please register first.");
+        if (data.type === "success") {
+          setReqId(data.message); // MSG91 returns reqId in message field
+          setStep("otp");
+          setCountdown(30);
           toast({
-            title: "Not registered",
-            description: "This mobile number is not registered. Please sign up first.",
-            variant: "destructive",
-            duration: 4000,
-          });
-          return;
-        }
-        if (data.success) {
-          setOtpSent(true);
-          setOtpInfoMessage(data.message || "OTP sent successfully");
-          toast({
-            title: "OTP sent",
-            description: data.message || "OTP has been sent to your mobile number",
+            title: "OTP Sent",
+            description: `OTP has been sent to +91-${mobileNumber}`,
             duration: 3000,
           });
-        }
-      },
-      onError: (err: any) => {
-        if (err?.response?.data) {
-          const serverMessage =
-            typeof err.response.data === "string"
-              ? err.response.data
-              : err.response.data.message || "Failed to send OTP. Please try again.";
-          setError(serverMessage);
         } else {
           setError("Failed to send OTP. Please try again.");
         }
-        toast({
-          title: "Error",
-          description: err?.response?.data?.message || "Failed to send OTP. Please try again.",
-          variant: "destructive",
-          duration: 3000,
-        });
+      },
+      onError: () => {
+        setError("Failed to send OTP. Please try again.");
       },
     });
   };
 
-  const handleOtpLogin = (e: React.MouseEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!mobile.trim()) {
-      setError("Please enter your mobile number and request an OTP first.");
-      return;
-    }
+    if (!validateOtpForm()) return;
 
-    if (!validateMobile(mobile)) {
-      setError("Please enter a valid 10-digit mobile number");
-      return;
-    }
-
-    if (!otp.trim()) {
-      setError("Please enter the OTP.");
-      return;
-    }
-
-    if (!validateOtp(otp)) {
-      setError("Please enter a valid 4-6 digit OTP");
-      return;
-    }
-
-    loginWithOtpMutation.mutate(
-      { mobileNumber: mobile.trim(), otp, email: email.trim() },
+    loginMutation.mutate(
+      {
+        reqId,
+        otp,
+      },
       {
         onSuccess: (data) => {
           if (data.token && data.userInfo) {
@@ -145,8 +123,8 @@ export default function Login() {
             });
 
             toast({
-              title: "Welcome back!",
-              description: data.message || "Login successful",
+              title: `Welcome back, ${data.userInfo.name}!`,
+              description: data.message,
               duration: 3000,
             });
 
@@ -154,25 +132,43 @@ export default function Login() {
               setLocation("/");
             }, 500);
           } else {
-            setError(data.message || "OTP login failed");
+            setError(data.message || "Login Failed");
           }
         },
-        onError: (err: any) => {
-          const data = err?.response?.data;
-          const serverMessage =
-            typeof data === "string"
-              ? data
-              : data?.message || "OTP login failed. Please try again.";
-          setError(serverMessage);
-          toast({
-            title: "Error",
-            description: serverMessage,
-            variant: "destructive",
-            duration: 3000,
-          });
+        onError: (error: any) => {
+          if (error.response?.status === 400) {
+            setError("Invalid OTP. Please try again.");
+          } else {
+            setError("Login failed. Please try again.");
+          }
         },
       }
     );
+  };
+
+  const handleResendOtp = () => {
+    setError("");
+    setOtp("");
+    sendOtpMutation.mutate(mobileNumber, {
+      onSuccess: (data) => {
+        if (data.type === "success") {
+          setReqId(data.message);
+          setCountdown(30);
+          toast({
+            title: "OTP Resent",
+            description: `OTP has been resent to +91-${mobileNumber}`,
+            duration: 3000,
+          });
+        }
+      },
+    });
+  };
+
+  const handleChangeNumber = () => {
+    setStep("mobile");
+    setOtp("");
+    setError("");
+    setCountdown(0);
   };
 
   return (
@@ -194,7 +190,7 @@ export default function Login() {
           <p className="text-gray-600 dark:text-gray-400">
             {isSessionExpired
               ? "Your session has expired. Please login again to continue."
-              : "Sign in with your mobile number and OTP"}
+              : "Sign in to your account to continue"}
           </p>
         </div>
 
@@ -206,118 +202,117 @@ export default function Login() {
             </div>
           )}
 
-          <div className="space-y-6">
+          <form onSubmit={step === "mobile" ? handleSendOtp : handleVerifyOtp} className="space-y-6">
             {error && (
               <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
-<div>
-  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-    Email
-  </label>
-  <Input
-    type="email"
-    placeholder="Enter your registered email"
-    value={email}
-    onChange={(e) => { setEmail(e.target.value); setError(""); }}
-    disabled={otpSent}
-    className="h-12"
-  />
-</div>
-            {/* Mobile Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Mobile Number
-              </label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-700 dark:text-gray-300 font-medium text-sm pointer-events-none z-10">
-                    +91
-                  </span>
-                  <Input
-                    type="tel"
-                    placeholder="Enter your mobile number"
-                    value={mobile}
-                    maxLength={10}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (!/^[0-9]*$/.test(value)) return;
-                      setMobile(value);
-                      setMobileError("");
-                      setError("");
-                    }}
-                    disabled={otpSent}
-                    className="pl-16 pr-4 h-12 w-full"
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={
-                    !validateMobile(mobile) ||
-                    sendOtpMutation.isPending ||
-                    otpSent
-                  }
-                  className={`h-12 px-4 sm:px-6 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 ${
-                    otpSent
-                      ? "bg-green-500 hover:bg-green-600"
-                      : "bg-purple-600 hover:bg-purple-700"
-                  }`}
-                >
-                  {sendOtpMutation.isPending
-                    ? "Sending..."
-                    : otpSent
-                    ? "Resend"
-                    : "Send OTP"}
-                </Button>
-              </div>
-              {mobileError && (
-                <p className="text-red-500 text-sm mt-1">{mobileError}</p>
-              )}
-              {otpInfoMessage && otpSent && (
-                <p className="text-green-500 text-sm mt-1">{otpInfoMessage}</p>
-              )}
-            </div>
 
-            {/* OTP Input - Show only after OTP is sent */}
-            {otpSent && (
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Enter OTP
-                </label>
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    placeholder="Enter 4-6 digit OTP"
-                    value={otp}
-                    maxLength={6}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (!/^[0-9]*$/.test(value)) return;
-                      setOtp(value);
-                      setError("");
-                    }}
-                    className="h-12"
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleOtpLogin}
-                    disabled={
-                      !validateOtp(otp) || loginWithOtpMutation.isPending
-                    }
-                    className="h-12 px-4 sm:px-6 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 bg-purple-600 hover:bg-purple-700"
-                  >
-                    {loginWithOtpMutation.isPending
-                      ? "Verifying..."
-                      : "Verify & Login"}
-                  </Button>
+            {step === "mobile" ? (
+              <>
+                {/* Mobile Number */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Mobile Number
+                  </label>
+                  <div className="relative">
+                    <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      placeholder="Enter your 10-digit mobile number"
+                      value={mobileNumber}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        setMobileNumber(value);
+                        setError("");
+
+                        if (value && !/^[0-9]{10}$/.test(value)) {
+                          setMobileError("Please enter a valid 10-digit mobile number");
+                        } else {
+                          setMobileError("");
+                        }
+                      }}
+                      className="pl-10 h-12"
+                    />
+                  </div>
+                  {mobileError && (
+                    <p className="text-red-500 text-sm mt-1">{mobileError}</p>
+                  )}
                 </div>
-              </div>
+
+                <Button className="w-full h-12" type="submit" disabled={isLoading || !!mobileError}>
+                  {isLoading ? "Sending OTP..." : (
+                    <span className="flex items-center justify-center gap-2">
+                      Send OTP
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  )}
+                </Button>
+              </>
+            ) : (
+              <>
+                {/* OTP Input */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Enter OTP
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleChangeNumber}
+                      className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                    >
+                      Change Number
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    OTP sent to +91-{mobileNumber}
+                  </p>
+                  <div className="flex justify-center">
+                    <InputOTP
+                      maxLength={6}
+                      value={otp}
+                      onChange={(value) => {
+                        setOtp(value);
+                        setError("");
+                      }}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                  <div className="mt-4 text-center">
+                    {countdown > 0 ? (
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Resend OTP in {countdown}s
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={isLoading}
+                        className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors disabled:opacity-50"
+                      >
+                        Resend OTP
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <Button className="w-full h-12" type="submit" disabled={isLoading || otp.length !== 6}>
+                  {isLoading ? "Verifying..." : "Verify & Login"}
+                </Button>
+              </>
             )}
-          </div>
+          </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">

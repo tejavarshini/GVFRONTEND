@@ -437,7 +437,7 @@ export default function PaymentResult() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Need assistance with your payment?
                 </p>
-                
+                <a
                   href="mailto:support@sabbpe.com"
                   className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
                 >

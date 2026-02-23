@@ -1,21 +1,34 @@
-export interface SendOtpRequest {
-  widgetId: string;
-  identifier: string;
+/** Request: POST /auth/register/send-otp */
+export interface RegisterSendOtpRequest {
+  mobileNumber: string;
+  email: string;
 }
 
-export interface SendOtpResponse {
+/** Response: register send OTP */
+export interface RegisterSendOtpResponse {
+  success: boolean;
   message: string;
-  type: string;
+  alreadyRegistered?: boolean;
 }
 
-// ADD THESE NEW INTERFACES:
-export interface VerifyOtpRequest {
-  widgetId: string;
-  reqId: string;
+/** Request: POST /auth/register/verify-otp */
+export interface RegisterVerifyOtpRequest {
+  fullName: string;
+  email: string;
+  mobileNumber: string;
   otp: string;
 }
 
-export interface VerifyOtpResponse {
-  message: string; // JWT token
-  type: string;
+/** Response: register verify OTP */
+export interface RegisterVerifyOtpResponse {
+  success: boolean;
+  token: string | null;
+  message: string;
+}
+
+/** Response: login send OTP */
+export interface LoginSendOtpResponse {
+  success: boolean;
+  message: string;
+  notRegistered?: boolean;
 }

@@ -10,10 +10,10 @@ export interface LoginRequest {
   password: string;
 }
 
-// ADD THESE NEW INTERFACES:
 export interface LoginWithOtpRequest {
-  reqId: string;
+  mobileNumber: string;
   otp: string;
+  email?: string; // ADD THIS
 }
 
 export interface LoginResponse {

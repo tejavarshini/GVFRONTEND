@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { sendOtp } from "@/api/otpApi";
+import { sendLoginOtp } from "@/api/otpApi";
 
 export const useSendOtp = () => {
   return useMutation({
-    mutationFn: (mobileNumber: string) => sendOtp(mobileNumber),
+    mutationFn: (params: { mobileNumber: string; email?: string }) => sendLoginOtp(params),
   });
 };

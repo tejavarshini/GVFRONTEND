@@ -1,4 +1,4 @@
-import { Star, Tag } from "lucide-react";
+import { Star, Tag, Package } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +7,10 @@ import type { Voucher } from "@/data/vouchers";
 
 interface VoucherCardProps {
   voucher: Voucher;
+  showBulkContext?: boolean;
 }
 
-export default function VoucherCard({ voucher }: VoucherCardProps) {
+export default function VoucherCard({ voucher, showBulkContext = false }: VoucherCardProps) {
   return (
     <Card
       className="overflow-hidden hover-elevate transition-all duration-300 hover:shadow-lg cursor-pointer"
@@ -74,6 +75,19 @@ export default function VoucherCard({ voucher }: VoucherCardProps) {
                 ({voucher.reviewCount})
               </span>
             </div>
+
+            {/* Bulk Context - Only for distributor mode */}
+            {showBulkContext && (
+              <div className="pt-2 border-t border-border space-y-1">
+                <div className="flex items-center gap-1.5 text-xs text-purple-700">
+                  <Package className="h-3.5 w-3.5" />
+                  <span className="font-semibold">Min Bulk: 10+</span>
+                </div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">
+                  Distributor Discount Available
+                </p>
+              </div>
+            )}
           </CardContent>
 
           {/* FIXED: Responsive footer padding */}

@@ -100,7 +100,11 @@ const CATEGORY_MOOD_AURAS: Record<string, { glow: string; shadow: string; hoverG
 //   'Sports & Footwears': 'Sports',
 // };
 
-export default function CategoriesSection() {
+interface CategoriesSectionProps {
+  buttonLabel?: string;
+}
+
+export default function CategoriesSection({ buttonLabel = "Quick Buy" }: CategoriesSectionProps = {}) {
   const { data: brands, isLoading, isError } = useBrands();
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   
@@ -1108,7 +1112,7 @@ useEffect(() => {
                                       }}
                                       className="w-full mt-2 bg-primary text-white py-1.5 rounded-md font-semibold text-[10px] flex items-center justify-center gap-1 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm"
                                     >
-                                      🛒 Quick Buy
+                                      🛒 {buttonLabel}
                                     </button>
                                   </div>
                                 </div>

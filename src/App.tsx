@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Home from "./pages/Home";
+import DistributorLandingPage from "./pages/DistributorLandingPage";
+import ResellerLandingPage from "./pages/ResellerLandingPage";
+import CorporateLandingPage from "./pages/CorporateLandingPage";
 import Brands from "./pages/Brands";
 import Categories from "./pages/Categories";
 import Offers from "./pages/Offers";
@@ -63,6 +66,9 @@ function AppRoutes() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/distributor" component={DistributorLandingPage} />
+      <Route path="/reseller" component={ResellerLandingPage} />
+      <Route path="/corporate" component={CorporateLandingPage} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/brands" component={Brands} />

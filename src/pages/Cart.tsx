@@ -132,7 +132,7 @@ export default function Cart() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const EasebuzzUrl = import.meta.env.VITE_EASEBUZZ_PAYMENT_URL;
+  const EasebuzzUrl = import.meta.env.VITE_EASEBUZZ_PAYMENT_URL || "https://testpay.easebuzz.in/pay";
 
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
 
@@ -682,9 +682,10 @@ export default function Cart() {
           return;
         }
 
-        console.log("🔑 Redirecting to Easebuzz");
+        console.log("🔑 Redirecting to Easebuzz with access key:", accessKey);
 
         const paymentUrl = `${EasebuzzUrl}/${accessKey}`;
+        console.log("💳 Payment URL:", paymentUrl);
         window.location.href = paymentUrl;
         clearCart();
       },
@@ -956,57 +957,31 @@ export default function Cart() {
                     </span>
                   </div>
 
-                  {/* Payment Gateway Selection - TWO BUTTONS SIDE BY SIDE */}
+                  {/* Payment Gateway Selection - SINGLE SABBPE BUTTON */}
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground text-center font-medium">
                       Choose Payment Gateway
                     </p>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      {/* NTT DATA Button */}
-                      <Button
-                        size="lg"
-                        className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 h-11 sm:h-12 text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
-                        onClick={() => handlePayNow("ntt")}
-                        disabled={isProcessing || scriptStatus !== "ready"}
-                      >
-                        {scriptStatus === "loading" ? (
-                          "Loading..."
-                        ) : scriptStatus === "error" ? (
-                          "Error"
-                        ) : paymentMutation.isPending ? (
-                          "Processing..."
-                        ) : (
-                          <>
-                            <span className="hidden sm:inline">Pay with</span>{" "}
-                            NTT
-                          </>
-                        )}
-                      </Button>
-
-                      {/* EASEBUZZ Button */}
-                      <Button
-                        size="lg"
-                        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 h-11 sm:h-12 text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
-                        onClick={() => handlePayNow("easebuzz")}
-                        disabled={
-                          isProcessing || easebuzzScriptStatus !== "ready"
-                        }
-                      >
-                        {easebuzzScriptStatus === "loading" ? (
-                          "Loading..."
-                        ) : easebuzzScriptStatus === "error" ? (
-                          "Error"
-                        ) : easebuzzPaymentMutation.isPending ? (
-                          "Processing..."
-                        ) : (
-                          <>
-                            <span className="hidden sm:inline">Pay with</span>{" "}
-                            Easebuzz
-                          </>
-                        )}
-                      </Button>
-                    </div>
+                    {/* SabbPe (Easebuzz) Button - Single centered button */}
+                    <Button
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 h-11 sm:h-12 text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
+                      onClick={() => handlePayNow("easebuzz")}
+                      disabled={
+                        isProcessing || easebuzzScriptStatus !== "ready"
+                      }
+                    >
+                      {easebuzzScriptStatus === "loading" ? (
+                        "Loading..."
+                      ) : easebuzzScriptStatus === "error" ? (
+                        "Error"
+                      ) : easebuzzPaymentMutation.isPending ? (
+                        "Processing..."
+                      ) : (
+                        "Pay with SabbPe"
+                      )}
+                    </Button>
 
                     {/* Loading/Error Status */}
                     {(createOrderMutation.isPending ||

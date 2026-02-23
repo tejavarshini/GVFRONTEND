@@ -24,6 +24,7 @@ export default function PaymentResult() {
   const [statusUpdated, setStatusUpdated] = useState(false);
   const [couponsFetched, setCouponsFetched] = useState(false);
   const [decryptedOrderNumber, setDecryptedOrderNumber] = useState<string>("");
+  const [decryptedClientId, setDecryptedClientId] = useState<string>("");
 
   // Parse params for BOTH gateways (NTT Data & Easebuzz)
   const paymentData = useMemo(() => {
@@ -116,15 +117,19 @@ export default function PaymentResult() {
     };
   }, [searchParams]);
 
-  // Decrypt transaction ID and extract order number
+  // Decrypt transaction ID and extract order number + clientId
   useEffect(() => {
     const decryptTransactionId = async () => {
       if (paymentData.encryptedTransactionId) {
         try {
           const decrypted = await decrypt(paymentData.encryptedTransactionId);
-          const orderNumber = decrypted.split("|")[0];
+          const parts = decrypted.split("|");
+          const orderNumber = parts[0];
+          const clientIdFromToken = parts[1] || "";
           setDecryptedOrderNumber(orderNumber);
+          setDecryptedClientId(clientIdFromToken);
           console.log("✅ Order Number:", orderNumber);
+          console.log("✅ Client ID from token:", clientIdFromToken);
         } catch (error) {
           console.error("❌ Decryption failed:", error);
           setDecryptedOrderNumber(paymentData.encryptedTransactionId);
@@ -164,12 +169,11 @@ export default function PaymentResult() {
                 description: `Order #${decryptedOrderNumber} has been successfully placed.`,
               });
 
-              // Get client ID
-              let clientId: string | null = null;
-
-              if (user?.clientId) {
+              // Get client ID - first from decrypted token, then fallbacks
+              let clientId: string | null = decryptedClientId || null;
+              if (!clientId && user?.clientId) {
                 clientId = user.clientId;
-              } else {
+              } else if (!clientId) {
                 const authUserString = localStorage.getItem("authUser");
                 if (authUserString) {
                   try {
@@ -180,6 +184,8 @@ export default function PaymentResult() {
                   }
                 }
               }
+
+              console.log("🔑 Client ID resolved:", clientId);
 
               // Fetch coupons
               if (clientId && !couponsFetched && decryptedOrderNumber) {
@@ -227,14 +233,15 @@ export default function PaymentResult() {
         variant: "destructive",
       });
     }
-  },  [
-  loading,
-  statusUpdated,
-  paymentData.encryptedTransactionId,
-  paymentData.status,
-  decryptedOrderNumber,
-  couponsFetched
-]);
+  }, [
+    loading,
+    statusUpdated,
+    paymentData.encryptedTransactionId,
+    paymentData.status,
+    decryptedOrderNumber,
+    decryptedClientId,
+    couponsFetched
+  ]);
 
   // Status UI helpers
   const getStatusIcon = () => {
@@ -430,7 +437,7 @@ export default function PaymentResult() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Need assistance with your payment?
                 </p>
-                <a
+                
                   href="mailto:support@sabbpe.com"
                   className="text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
                 >

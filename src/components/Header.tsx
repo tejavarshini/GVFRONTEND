@@ -8,6 +8,7 @@ import {
   Moon,
   MapPin,
   Package,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,7 +87,7 @@ export default function Header() {
     getSavedLocation()
   );
 
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const [openLocationModal, setOpenLocationModal] = useState(false);
   const [pincode, setPincode] = useState("");
@@ -94,6 +95,7 @@ export default function Header() {
   const [selected, setSelected] = useState<PostOffice | null>(null);
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [partnerDropdownOpen, setPartnerDropdownOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -312,26 +314,60 @@ export default function Header() {
             )} */}
 
             {/* NAV LINKS - Desktop only */}
-            {/* {headerConfig.navigation.enabled && (
-              <nav className="hidden md:flex items-center gap-2">
-                {enabledLinks.map((link) => {
-                  const isActive = location === link.href;
-                  return (
-                    <Link key={link.href} href={link.href}>
-                      <Button
-                        variant="ghost"
-                        className={`px-3 lg:px-4 py-2 text-sm font-medium ${isActive
+            <nav className="hidden md:flex items-center gap-2">
+              {navLinks.map((link) => {
+                const isActive = location === link.href;
+                return (
+                  <Link key={link.href} href={link.href}>
+                    <Button
+                      variant="ghost"
+                      className={`px-3 lg:px-4 py-2 text-sm font-medium ${
+                        isActive
                           ? "text-primary bg-primary/10"
                           : "text-foreground/70 hover:text-primary hover:bg-primary/5"
-                          }`}
-                      >
-                        {link.label}
-                      </Button>
+                      }`}
+                    >
+                      {link.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+
+              {/* Partner With Us Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setPartnerDropdownOpen(true)}
+                onMouseLeave={() => setPartnerDropdownOpen(false)}
+              >
+                <Button
+                  variant="ghost"
+                  className="px-3 lg:px-4 py-2 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 flex items-center gap-1"
+                >
+                  Partner With Us
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+
+                {partnerDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50">
+                    <Link href="/distributor">
+                      <button className="w-full px-4 py-3 text-left text-sm hover:bg-primary/10 hover:text-primary transition-colors">
+                        Distributor
+                      </button>
                     </Link>
-                  );
-                })}
-              </nav>
-            )} */}
+                    <Link href="/reseller">
+                      <button className="w-full px-4 py-3 text-left text-sm hover:bg-primary/10 hover:text-primary transition-colors">
+                        Reseller
+                      </button>
+                    </Link>
+                    <Link href="/corporate">
+                      <button className="w-full px-4 py-3 text-left text-sm hover:bg-primary/10 hover:text-primary transition-colors">
+                        Corporate
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </nav>
 
             {/* SEARCH BAR - Mobile: compact between logo and profile, Desktop: full */}
             {headerConfig.searchBar.enabled && (
@@ -523,6 +559,28 @@ export default function Header() {
                         </button>
                       </Link>
                     )}
+
+                    {/* Partner With Us Section in Mobile Menu */}
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Partner With Us
+                      </p>
+                      <Link href="/distributor">
+                        <button className="px-4 py-3 text-left text-base rounded-lg hover:bg-primary/10 hover:text-primary w-full transition-colors">
+                          Distributor
+                        </button>
+                      </Link>
+                      <Link href="/reseller">
+                        <button className="px-4 py-3 text-left text-base rounded-lg hover:bg-primary/10 hover:text-primary w-full transition-colors">
+                          Reseller
+                        </button>
+                      </Link>
+                      <Link href="/corporate">
+                        <button className="px-4 py-3 text-left text-base rounded-lg hover:bg-primary/10 hover:text-primary w-full transition-colors">
+                          Corporate
+                        </button>
+                      </Link>
+                    </div>
                   </nav>
 
                   {/* Location in Mobile Menu */}

@@ -1,11 +1,11 @@
 ﻿import { motion } from 'framer-motion';
 import {
   Gamepad2,
-  UtensilsCrossed,
+  Utensils,
   ShoppingBag,
   Shirt,
-  PlaneTakeoff,
-  Joystick,
+  Plane,
+  Film,
   Sparkles,
   Gem,
   Dumbbell,
@@ -32,85 +32,22 @@ interface PremiumCategoryIconProps {
   isGuided?: boolean; // Optional override
 }
 
-// Map category types to Lucide icons
+// Map category types to Lucide icons - clean line icons
 const iconMap: Record<CategoryType, LucideIcon> = {
-  entertainment: Gamepad2,
-  food: UtensilsCrossed,
+  food: Utensils,
   ecommerce: ShoppingBag,
   fashion: Shirt,
-  travel: PlaneTakeoff,
-  gaming: Joystick,
+  travel: Plane,
+  gaming: Gamepad2,
   wellness: Sparkles,
   jewellery: Gem,
+  entertainment: Film,
   sports: Dumbbell
 };
 
-// Category-specific color themes
-const colorConfig: Record<CategoryType, {
-  bg: string;
-  bgGuided: string;
-  text: string;
-  shadowGuided: string;
-}> = {
-  food: {
-    bg: 'bg-orange-100/70',
-    bgGuided: 'bg-orange-200/80',
-    text: 'text-orange-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(249,115,22,0.45)]'
-  },
-  ecommerce: {
-    bg: 'bg-blue-100/70',
-    bgGuided: 'bg-blue-200/80',
-    text: 'text-blue-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(59,130,246,0.45)]'
-  },
-  fashion: {
-    bg: 'bg-pink-100/70',
-    bgGuided: 'bg-pink-200/80',
-    text: 'text-pink-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(236,72,153,0.45)]'
-  },
-  travel: {
-    bg: 'bg-sky-100/70',
-    bgGuided: 'bg-sky-200/80',
-    text: 'text-sky-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(14,165,233,0.45)]'
-  },
-  gaming: {
-    bg: 'bg-violet-100/70',
-    bgGuided: 'bg-violet-200/80',
-    text: 'text-violet-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(139,92,246,0.45)]'
-  },
-  wellness: {
-    bg: 'bg-rose-100/70',
-    bgGuided: 'bg-rose-200/80',
-    text: 'text-rose-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(244,63,94,0.45)]'
-  },
-  jewellery: {
-    bg: 'bg-amber-100/70',
-    bgGuided: 'bg-amber-200/80',
-    text: 'text-amber-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(245,158,11,0.45)]'
-  },
-  sports: {
-    bg: 'bg-emerald-100/70',
-    bgGuided: 'bg-emerald-200/80',
-    text: 'text-emerald-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(16,185,129,0.45)]'
-  },
-  entertainment: {
-    bg: 'bg-purple-100/70',
-    bgGuided: 'bg-purple-200/80',
-    text: 'text-purple-600',
-    shadowGuided: 'shadow-[0_0_22px_rgba(168,85,247,0.45)]'
-  }
-};
-
-// Export helper function to get text color for category labels
+// Export helper function to get text color for category labels - unified purple
 export function getCategoryTextColor(type: CategoryType): string {
-  return colorConfig[type].text;
+  return 'text-purple-600';
 }
 
 export default function PremiumCategoryIcon({ 
@@ -121,7 +58,6 @@ export default function PremiumCategoryIcon({
   isGuided: isGuidedProp
 }: PremiumCategoryIconProps) {
   const Icon = iconMap[type];
-  const colors = colorConfig[type];
   const { guideTarget } = useGuide();
   
   // Use prop if provided, otherwise check context
@@ -129,24 +65,22 @@ export default function PremiumCategoryIcon({
 
   return (
     <motion.div
-      className="relative w-full h-full rounded-2xl bg-white/70 backdrop-blur-md shadow-sm hover:shadow-md flex items-center justify-center overflow-hidden transition-all"
+      className="relative w-full h-full flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ 
         opacity: 1,
-        y: isHovered ? -4 : 0,
-        scale: isActive ? 1.05 : isHovered ? 1.04 : 1
+        scale: isActive ? 1.02 : isHovered ? 1.01 : 1
       }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.98 }}
       transition={{
         opacity: { duration: 0.4 },
-        y: { duration: 0.25, ease: "easeOut" },
         scale: { duration: 0.2 }
       }}
     >
       {/* Shimmer effect for guided state */}
       {isGuided && (
         <motion.div
-          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/30 to-transparent"
+          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-purple-200/40 to-transparent"
           initial={{ x: '-100%' }}
           animate={{ x: '100%' }}
           transition={{
@@ -157,41 +91,33 @@ export default function PremiumCategoryIcon({
         />
       )}
 
-      {/* Soft Glow Container */}
-      <div 
-        className={`w-full h-full rounded-2xl backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
-          isGuided 
-            ? `${colors.bgGuided} ${colors.shadowGuided}` 
-            : colors.bg
-        }`}
-      >
-        {/* Icon with breathing and pulse animations */}
-        <motion.div
-          className="flex items-center justify-center"
-          animate={
-            isGuided
-              ? {
-                  scale: [1, 1.08, 1],
-                }
-              : !isHovered
-              ? {
-                  scale: [1, 1.05, 1],
-                }
-              : {
-                  scale: 1.05
-                }
+      {/* Minimal Line Icon - SabbPe Purple */}
+      <motion.div
+        className="flex items-center justify-center"
+        animate={
+          isGuided
+            ? { scale: [1, 1.06, 1] }
+            : isHovered
+            ? { scale: 1.04 }
+            : { scale: 1 }
+        }
+        transition={{
+          scale: {
+            duration: isGuided ? 1.5 : 0.3,
+            repeat: isGuided ? Infinity : 0,
+            ease: "easeInOut"
           }
-          transition={{
-            scale: {
-              duration: isGuided ? 1.5 : 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }
-          }}
-        >
-          <Icon className={`w-5 h-5 ${colors.text}`} strokeWidth={2.6} />
-        </motion.div>
-      </div>
+        }}
+      >
+        <Icon 
+          className={`w-7 h-7 transition-colors duration-300 ${
+            isActive || isHovered 
+              ? 'text-purple-700' 
+              : 'text-purple-600'
+          }`} 
+          strokeWidth={1.5}
+        />
+      </motion.div>
     </motion.div>
   );
 }

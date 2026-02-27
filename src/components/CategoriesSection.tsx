@@ -39,54 +39,7 @@ const CATEGORY_TYPE_MAP: Record<string, CategoryType> = {
   'Sports & Footwears': 'sports',
 };
 
-// ✨ Mood-driven aura colors for each category
-const CATEGORY_MOOD_AURAS: Record<string, { glow: string; shadow: string; hoverGlow: string }> = {
-  'E-Commerce': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Food & Beverages': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Fashion & Lifestyle': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Tour & Travel': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Gaming': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Wellness & Beauty': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Jewellery': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Entertainment': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-  'Sports & Footwears': { 
-    glow: 'rgba(147, 51, 234, 0.45)', 
-    shadow: '0 0 40px rgba(147, 51, 234, 0.65), 0 0 60px rgba(147, 51, 234, 0.45)',
-    hoverGlow: 'rgba(147, 51, 234, 0.75)'
-  },
-};
+// ✨ Removed CATEGORY_MOOD_AURAS - now using unified SabbPe purple theme
 
 // const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
 //   'Gaming': 'Gaming',
@@ -536,7 +489,6 @@ useEffect(() => {
               const isActive = selectedCategory === category.name;
               const isHovered = hoveredCategory === category.name;
               const categoryType = CATEGORY_TYPE_MAP[category.name] || 'ecommerce';
-              const moodAura = CATEGORY_MOOD_AURAS[category.name] || CATEGORY_MOOD_AURAS['E-Commerce'];
 
               return (
                 <motion.button
@@ -550,39 +502,18 @@ useEffect(() => {
                   whileHover={!isDisabled ? { scale: 1.03, y: -4 } : {}}
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
-                  {/* Premium Card with mood-driven aura */}
+                  {/* Premium Card with unified purple theme */}
                   <div 
-                    className={`w-[100px] h-[100px] rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 relative ${
+                    className={`w-[100px] h-[100px] rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 relative hover:shadow-md hover:-translate-y-1 ${
                     isActive
-                      ? 'bg-white dark:bg-slate-900/60 border-2 border-purple-300 dark:border-purple-500/50 shadow-[0_4px_16px_rgba(0,0,0,0.08)] dark:shadow-purple-900/30'
+                      ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-500/50 shadow-md'
                       : isDisabled
-                      ? 'bg-gray-100 dark:bg-slate-800/40 border-2 border-gray-200 dark:border-slate-700/40 opacity-40'
-                      : 'bg-white dark:bg-slate-800/40 border-2 border-gray-200/70 dark:border-slate-700/40 shadow-[0_4px_12px_rgba(0,0,0,0.06)] dark:shadow-black/20 group-hover:border-gray-300 dark:group-hover:border-slate-600 group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:group-hover:shadow-black/40'
+                      ? 'bg-white dark:bg-slate-800/40 border border-purple-100/40 dark:border-slate-700/40 opacity-40'
+                      : 'bg-white dark:bg-slate-800/40 border border-purple-100 dark:border-slate-700/40'
                     }`}
-                    style={{
-                      boxShadow: !isDisabled && isHovered 
-                        ? `${moodAura.shadow}, 0 8px 20px rgba(0,0,0,0.1)` 
-                        : !isDisabled && !isActive
-                        ? `0 4px 12px rgba(0,0,0,0.06)`
-                        : undefined
-                    }}
                   >
-                    {/* Mood-driven aura background glow */}
-                    {!isDisabled && (
-                      <div 
-                        className="absolute inset-0 rounded-2xl transition-all duration-300 -z-10"
-                        style={{
-                          background: isHovered 
-                            ? `radial-gradient(circle at center, ${moodAura.hoverGlow}, transparent 65%)`
-                            : `radial-gradient(circle at center, ${moodAura.glow}, transparent 65%)`,
-                          filter: isHovered ? 'blur(20px)' : 'blur(16px)',
-                          opacity: 1,
-                          transform: 'scale(1.3)',
-                        }}
-                      />
-                    )}
                     
-                    {/* Premium 3D Illustration Icon */}
+                    {/* Minimal Line Icon - No aura background */}
                     <PremiumCategoryIcon 
                       type={categoryType}
                       id={category.name.toLowerCase().replace(/\s+/g, '-')}
@@ -591,14 +522,14 @@ useEffect(() => {
                     />
                   </div>
                   
-                  {/* Category Label - Clean typography */}
+                  {/* Category Label - Unified purple text */}
                   <div className="text-center min-w-[100px] mt-2">
                     <p className={`text-xs font-bold tracking-wide leading-tight line-clamp-2 transition-colors duration-300 ${
                       isActive 
-                        ? getCategoryTextColor(categoryType)
+                        ? 'text-purple-600'
                         : isDisabled
                         ? 'text-gray-400 dark:text-slate-500'
-                        : 'text-gray-700 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-slate-100'
+                        : 'text-gray-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-500'
                     }`}>
                       {category.name}
                     </p>
@@ -995,12 +926,12 @@ useEffect(() => {
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">
                           {!categoryFilter
-                            ? `All Brands in ${category.name}`
+                            ? category.name
                             : categoryFilter === "Super Cashbacks" 
                             ? "Top Deals" 
                             : categoryFilter === "Nearby Stores"
                             ? "Nearby Brands"
-                            : categoryFilter} {categoryFilter ? `in ${category.name}` : ''}
+                            : categoryFilter}
                         </h3>
                         
                         {/* Close button - only shows if this is the selected category */}

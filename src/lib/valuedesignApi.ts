@@ -51,7 +51,7 @@ giftcardApiClient.interceptors.request.use(addAuthToken, (error) => Promise.reje
 giftcardApiClient.interceptors.response.use((response) => response, handleAuthError);
 
 export const ordersApiClient = axios.create({
-  baseURL: BRAND_API_URL, // ✅ https://vdspbck.sabbpe.com/api
+  baseURL: BRAND_API_URL, // ✅ https://vdspbck.gift360.io/api
   headers: {
     "Content-Type": "application/json",
   },

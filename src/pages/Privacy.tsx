@@ -20,7 +20,7 @@ const Privacy = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-3">1. Purpose</h2>
               <p className="text-gray-700 leading-relaxed">
-                This Privacy Policy explains how SabbPe collects, uses, shares, stores, and protects information when you purchase or redeem a SabbPe Gift Voucher.
+                This Privacy Policy explains how Gift360 collects, uses, shares, stores, and protects information when you purchase or redeem a Gift Voucher.
               </p>
               <p className="text-gray-700 leading-relaxed mt-2">The policy complies with:</p>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
@@ -162,7 +162,7 @@ const Privacy = () => {
               <p className="text-gray-700 leading-relaxed">
                 <strong>Data Protection Officer (DPO)</strong><br />
                 One78 SabbPe Technology Solutions India Private Limited<br />
-                Email: <a href="mailto:contact@sabbpe.com" className="text-blue-600 hover:underline">contact@sabbpe.com</a>
+                Email: <a href="mailto:contact@gift360.io" className="text-blue-600 hover:underline">contact@gift360.io</a>
               </p>
             </section>
           </div>

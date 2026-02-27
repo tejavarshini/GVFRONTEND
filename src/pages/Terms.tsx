@@ -20,14 +20,14 @@ const Terms = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">Introduction</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                These Terms & Conditions ("Terms") govern the purchase, issuance, use, redemption, cancellation, refund, and expiry of SabbPe Gift Vouchers ("Vouchers"). The Vouchers are issued by: <strong>One78 SabbPe Technology Solutions India Private Limited</strong> ("SabbPe", "Company", "We", "Us", "Our") Registered in India under the Companies Act, 2013. By purchasing or using a SabbPe Gift Voucher, you ("User", "Customer", "Holder", "Recipient") agree to these Terms.
+                                These Terms & Conditions ("Terms") govern the purchase, issuance, use, redemption, cancellation, refund, and expiry of Gift360 Gift Vouchers ("Vouchers"). The Vouchers are issued by: <strong>One78 SabbPe Technology Solutions India Private Limited</strong> ("Gift360", "Company", "We", "Us", "Our") Registered in India under the Companies Act, 2013. By purchasing or using a Gift360 Gift Voucher, you ("User", "Customer", "Holder", "Recipient") agree to these Terms.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">Nature of the Voucher</h2>
                             <p className="text-gray-700 leading-relaxed mb-2">
-                                SabbPe Gift Vouchers are prepaid instruments, redeemable only for products/services listed on the SabbPe platform or approved partner platforms.
+                                Gift360 Gift Vouchers are prepaid instruments, redeemable only for products/services listed on the Gift360 platform or approved partner platforms.
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Vouchers do not carry any interest.</li>
@@ -57,7 +57,7 @@ const Terms = () => {
                                 <li>Physically, if applicable (cards, print vouchers).</li>
                                 <li>With a unique Voucher Code and/or PIN.</li>
                             </ul>
-                            <p className="text-gray-700 leading-relaxed mt-2">SabbPe is not responsible for:</p>
+                            <p className="text-gray-700 leading-relaxed mt-2">Gift360 is not responsible for:</p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>The purchaser entered an incorrect email or mobile number.</li>
                                 <li>Delivery delays caused by technical issues or user error.</li>
@@ -69,14 +69,14 @@ const Terms = () => {
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>All vouchers have a minimum 1-year validity from the date of issuance (as per RBI PPI norms).</li>
                                 <li>Expiry date will be explicitly mentioned.</li>
-                                <li>SabbPe is not obligated to revalidate expired vouchers unless required by law.</li>
+                                <li>Gift360 is not obligated to revalidate expired vouchers unless required by law.</li>
                             </ul>
                         </section>
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">Redemption Conditions</h2>
                             <p className="text-gray-700 leading-relaxed mb-2">
-                                Vouchers can be redeemed only against eligible goods/services listed on the SabbPe platform. Redemption may require entering:
+                                Vouchers can be redeemed only against eligible goods/services listed on the Gift360 platform. Redemption may require entering:
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Voucher Code,</li>
@@ -102,7 +102,7 @@ const Terms = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">Lost, Stolen, or Misused Vouchers</h2>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                                <li>SabbPe is not liable for vouchers lost, stolen, or used without your permission.</li>
+                                <li>Gift360 is not liable for vouchers lost, stolen, or used without your permission.</li>
                                 <li>Once a voucher is delivered, safeguarding it is the customer's responsibility.</li>
                                 <li>Replacement may be offered only if: Voucher is unused, Proof of purchase is provided, Company verification is successful.</li>
                             </ul>
@@ -110,7 +110,7 @@ const Terms = () => {
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">Fraud, Abuse & Suspicious Activity</h2>
-                            <p className="text-gray-700 leading-relaxed mb-2">SabbPe may block or cancel vouchers if:</p>
+                            <p className="text-gray-700 leading-relaxed mb-2">Gift360 may block or cancel vouchers if:</p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Obtained fraudulently,</li>
                                 <li>Used to commit fraud or illegal transactions,</li>
@@ -137,20 +137,20 @@ const Terms = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-3">Cancellation by SabbPe</h2>
-                            <p className="text-gray-700 leading-relaxed mb-2">SabbPe may cancel a voucher due to:</p>
+                            <h2 className="text-2xl font-semibold mb-3">Cancellation by Gift360</h2>
+                            <p className="text-gray-700 leading-relaxed mb-2">Gift360 may cancel a voucher due to:</p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Fraudulent purchase,</li>
                                 <li>System error,</li>
                                 <li>Regulatory requirement,</li>
                                 <li>Misuse or violation of these terms.</li>
                             </ul>
-                            <p className="text-gray-700 leading-relaxed mt-2">Refund may be provided at SabbPe's discretion.</p>
+                            <p className="text-gray-700 leading-relaxed mt-2">Refund may be provided at Gift360's discretion.</p>
                         </section>
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">13. Limitation of Liability</h2>
-                            <p className="text-gray-700 leading-relaxed mb-2">SabbPe is not liable for:</p>
+                            <p className="text-gray-700 leading-relaxed mb-2">Gift360 is not liable for:</p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Loss arising from voucher misuse,</li>
                                 <li>Inability to redeem due to technical or network issues,</li>
@@ -163,14 +163,14 @@ const Terms = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">14. Governing Law & Jurisdiction</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                These Terms are governed by Indian law. Legal disputes shall be subject to courts having jurisdiction where SabbPe's registered office is located.
+                                These Terms are governed by Indian law. Legal disputes shall be subject to courts having jurisdiction where Gift360's registered office is located.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-3">15. Updates to Terms</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                SabbPe may update these Terms at any time. Users will be notified via website updates or electronic communication.
+                                Gift360 may update these Terms at any time. Users will be notified via website updates or electronic communication.
                             </p>
                         </section>
                     </div>

@@ -62,10 +62,10 @@ export default function SingleBlogPage() {
 
     useEffect(() => {
         if (post) {
-            document.title = `${post.title} | SabbPe Blog`;
+            document.title = `${post.title} | Gift360 Blog`;
             const metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) {
-                metaDesc.setAttribute("content", `Read about ${post.title} by ${post.author} on SabbPe.`);
+                metaDesc.setAttribute("content", `Read about ${post.title} by ${post.author} on Gift360.`);
             }
         }
         window.scrollTo(0, 0);
@@ -287,7 +287,7 @@ export default function SingleBlogPage() {
                                     {
                                         name: "Rohit Verma",
                                         date: "Jan 11, 2026",
-                                        comment: "Great insights! Digital gifting is indeed the future. I've personally started using SabbPe for all my corporate gifts.",
+                                        comment: "Great insights! Digital gifting is indeed the future. I've personally started using Gift360 for all my corporate gifts.",
                                         initials: "RV"
                                     },
                                     {

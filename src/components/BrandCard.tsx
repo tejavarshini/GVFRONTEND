@@ -48,20 +48,20 @@ export default function BrandCard({ brand }: BrandCardProps) {
     let isMounted = true;
 
     async function loadImage() {
-      // Build the sabbpe CDN URL using BrandId
-      const sabbpeUrl = `https://images.sabbpe.com/${brand.BrandId}.png`;
+      // Build the Gift360 CDN URL using BrandId
+      const sabbpeUrl = `https://images.gift360.io/${brand.BrandId}.png`;
 
       if (!rawImage) {
         // No rawImage, try sabbpe URL directly
-        console.log('No raw image, trying sabbpe URL for:', brand.BrandName);
+        console.log('No raw image, trying gift360 URL for:', brand.BrandName);
         try {
           const validatedUrl = await validateImage(sabbpeUrl);
           if (isMounted) {
             setImgSrc(validatedUrl);
-            console.log('Sabbpe image loaded for:', brand.BrandName);
+            console.log('Gift360 image loaded for:', brand.BrandName);
           }
         } catch {
-          console.error('Sabbpe image also failed for:', brand.BrandName);
+          console.error('Gift360 image also failed for:', brand.BrandName);
           if (isMounted) {
             setImgSrc(FALLBACK);
           }

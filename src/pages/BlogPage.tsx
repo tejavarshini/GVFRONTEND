@@ -21,10 +21,10 @@ export default function BlogPage() {
     const { config } = useConfig();
 
     useEffect(() => {
-        document.title = "Blogs & Updates | SabbPe Gift Vouchers";
+        document.title = "Blogs & Updates | Gift360 Gift Vouchers";
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
-            metaDesc.setAttribute("content", "Stay updated with the latest gift voucher trends, upcoming offers, and site changelogs at SabbPe.");
+            metaDesc.setAttribute("content", "Stay updated with the latest gift voucher trends, upcoming offers, and site changelogs at Gift360.");
         }
     }, []);
 
@@ -39,7 +39,7 @@ export default function BlogPage() {
             image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&q=80&w=800"
         },
         {
-            title: "Maximizing Rewards with SabbPe Vouchers",
+            title: "Maximizing Rewards with Gift360 Vouchers",
             description: "A complete guide to getting the most value out of every purchase.",
             date: "Jan 08, 2026",
             category: "Guide",
@@ -106,7 +106,7 @@ export default function BlogPage() {
             icon: <Star className="w-5 h-5 text-yellow-500" />
         },
         {
-            title: "SabbPe Mobile App Launch",
+            title: "Gift360 Mobile App Launch",
             date: "Expected: Q1 2026",
             status: "In Development",
             icon: <Rocket className="w-5 h-5 text-purple-500" />

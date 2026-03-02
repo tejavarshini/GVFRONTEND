@@ -53,7 +53,7 @@ export default function Home() {
 
                 {/* FEATURED VOUCHERS */}
                 {homeConfig.featuredVouchers.enabled && (
-                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+                    <section className="w-full px-4 sm:px-6 lg:px-10 xl:px-16 py-8 sm:py-12">
                         <div className="flex items-center justify-between mb-6 sm:mb-8">
                             <div>
                                 <h2 className="text-2xl sm:text-3xl font-bold">Featured Vouchers</h2>

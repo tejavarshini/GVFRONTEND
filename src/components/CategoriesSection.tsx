@@ -8,9 +8,7 @@ import { Link } from 'wouter';
 // import BrandCard from '@/components/BrandCard'; // ADD THIS IMPORT
 import type { Brand } from '@/types/brand';
 import { Sparkles, Star, Tag, Award, MapPin } from 'lucide-react'; // ✅ Added MapPin
-import PremiumCategoryIcon, { type CategoryType } from '@/components/PremiumCategoryIcon';
 import LayeredCategorySection from '@/components/LayeredCategorySection';
-import { getCategoryTextColor } from '@/components/PremiumCategoryIcon';
 
 
 // Category icon mapping - Only 9 categories from backend
@@ -26,20 +24,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   'Sports & Footwears': '/icons/sports.png',
 };
 
-// Map category names to PremiumCategoryIcon types
-const CATEGORY_TYPE_MAP: Record<string, CategoryType> = {
-  'Gaming': 'gaming',
-  'Fashion & Lifestyle': 'fashion',
-  'E-Commerce': 'ecommerce',
-  'Food & Beverages': 'food',
-  'Tour & Travel': 'travel',
-  'Wellness & Beauty': 'wellness',
-  'Jewellery': 'jewellery',
-  'Entertainment': 'entertainment',
-  'Sports & Footwears': 'sports',
-};
-
-// ✨ Removed CATEGORY_MOOD_AURAS - now using unified SabbPe purple theme
+// ✨ Using PNG icons from public/icons/ — no SVG icon map needed
 
 // const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
 //   'Gaming': 'Gaming',
@@ -434,7 +419,7 @@ useEffect(() => {
   if (isLoading) {
     return (
       <section className="py-4 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-16">
           {/* Loading Skeleton Grid - theme aware */}
           <div className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
@@ -455,7 +440,7 @@ useEffect(() => {
   if (isError) {
     return (
       <section className="py-4 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-16 text-center">
           <p className="text-red-500 dark:text-red-400">
             Unable to load categories
           </p>
@@ -472,14 +457,14 @@ useEffect(() => {
   return (
     <>
       <section className="pt-0 pb-2 sm:pb-3 lg:pb-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-16">
           {/* <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-2 sm:mb-3 text-gray-900">
                     Hot Deals by Category
                 </h2> */}
 
-          {/* Clean Minimal Category Cards */}
+          {/* Evenly distributed category grid - scrollable only on very small screens */}
           <motion.div
-            className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 scrollbar-hide"
+            className="grid grid-cols-5 sm:grid-cols-9 gap-2 sm:gap-3 pb-1"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
@@ -487,8 +472,7 @@ useEffect(() => {
               const isPreSelected = preSelectedCategories.includes(category.name);
               const isDisabled = !viewAllMode && preSelectedCategories.length > 0 && !isPreSelected;
               const isActive = selectedCategory === category.name;
-              const isHovered = hoveredCategory === category.name;
-              const categoryType = CATEGORY_TYPE_MAP[category.name] || 'ecommerce';
+              const isHovered = hoveredCategory === category.name; // kept for future use
 
               return (
                 <motion.button
@@ -497,33 +481,45 @@ useEffect(() => {
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   onMouseLeave={() => setHoveredCategory(null)}
                   disabled={isDisabled}
-                  className="flex flex-col items-center gap-2 transition-all duration-300 focus:outline-none flex-shrink-0 group"
+                  className="flex flex-col items-center gap-2 transition-all duration-300 focus:outline-none w-full group"
                   whileTap={{ scale: isDisabled ? 1 : 0.95 }}
                   whileHover={!isDisabled ? { scale: 1.03, y: -4 } : {}}
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
-                  {/* Premium Card with unified purple theme */}
+                  {/* Category icon tile with PNG image */}
                   <div 
-                    className={`w-[100px] h-[100px] rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 relative hover:shadow-md hover:-translate-y-1 ${
-                    isActive
-                      ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-500/50 shadow-md'
-                      : isDisabled
-                      ? 'bg-white dark:bg-slate-800/40 border border-purple-100/40 dark:border-slate-700/40 opacity-40'
-                      : 'bg-white dark:bg-slate-800/40 border border-purple-100 dark:border-slate-700/40'
+                    className={`w-full aspect-square max-w-[100px] mx-auto rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 relative ${
+                      isActive
+                        ? 'ring-2 ring-purple-500 dark:ring-purple-400 shadow-lg shadow-purple-500/20'
+                        : isDisabled
+                        ? 'opacity-40'
+                        : 'hover:shadow-md hover:ring-2 hover:ring-purple-300 dark:hover:ring-purple-600'
                     }`}
                   >
-                    
-                    {/* Minimal Line Icon - No aura background */}
-                    <PremiumCategoryIcon 
-                      type={categoryType}
-                      id={category.name.toLowerCase().replace(/\s+/g, '-')}
-                      isActive={isActive}
-                      isHovered={isHovered && !isDisabled}
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      loading="lazy"
+                      draggable={false}
                     />
+
+                    {/* Active checkmark overlay */}
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="absolute inset-0 flex items-center justify-center bg-purple-900/30 backdrop-blur-[1px]"
+                      >
+                        <svg className="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </motion.div>
+                    )}
                   </div>
                   
                   {/* Category Label - Unified purple text */}
-                  <div className="text-center min-w-[100px] mt-2">
+                  <div className="text-center w-full mt-1">
                     <p className={`text-xs font-bold tracking-wide leading-tight line-clamp-2 transition-colors duration-300 ${
                       isActive 
                         ? 'text-purple-600'
@@ -835,7 +831,7 @@ useEffect(() => {
                 const discountB = parseFloat(b.Discount?.replace('%', '') || '0');
                 return discountB - discountA;
               })
-              .slice(0, 10);
+              
           } else {
             // Filter selected: apply filter logic
             brandsForThisCategory = category.brands
@@ -870,7 +866,7 @@ useEffect(() => {
                 const discountB = parseFloat(b.Discount?.replace('%', '') || '0');
                 return discountB - discountA;
               })
-              .slice(0, 5);
+              
           }
 
           const displayBrands = categoryFilter === "Nearby Stores" 
@@ -897,7 +893,7 @@ useEffect(() => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   id={`category-section-${category.name}`}
-                  className="pt-0 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-24"
+                  className="pt-0 px-4 sm:px-6 lg:px-10 xl:px-16 w-full pb-24"
                 >
                   {/* ✅ Loading State for Nearby Stores */}
                   {categoryFilter === "Nearby Stores" && isLoadingNearby && (
@@ -953,7 +949,7 @@ useEffect(() => {
                       <div className="absolute top-0 right-0 bottom-0 w-24 pointer-events-none z-10 bg-gradient-to-l from-white dark:from-slate-800/20 via-white/80 dark:via-slate-800/10 to-transparent" />
 
                       {/* ✅ Direct wrapper with flex flex-nowrap + overflow-x-auto */}
-                      <div className="flex flex-nowrap gap-4 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 -mx-3 px-3 snap-x snap-mandatory">
+                      <div className="flex flex-nowrap gap-4 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 snap-x snap-mandatory">
                         {displayBrands.map((brand: any, index) => {
 
   // ✅ Handle both Brand and NearbyBrand types

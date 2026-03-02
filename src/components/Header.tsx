@@ -26,6 +26,7 @@ import CategoryNav from "./CategoryNav";
 
 import { useFetchWallet } from "@/hooks/useFetchWallet";
 import { WalletOdometer } from "@/components/WalletOdometer";
+import OnlineIndicator from "@/components/OnlineIndicator";
 
 // Types
 interface LocationData {
@@ -206,7 +207,7 @@ export default function Header() {
     <>
       {/* HEADER */}
       <header className="sticky top-2 z-50 w-full bg-background/95 backdrop-blur border-b pb-1 sm:pb-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-16">
           <div className="flex items-center justify-between h-16 sm:h-16 lg:h-20 gap-2">
             {/* LOGO - FIXED: Responsive sizing */}
             {headerConfig.logo.enabled && (
@@ -220,6 +221,9 @@ export default function Header() {
                 </button>
               </Link>
             )}
+
+            {/* 🟢 ONLINE INDICATOR - next to logo */}
+            <OnlineIndicator />
 
             {/* MOBILE SEARCH BUTTON - Visible only on mobile, between logo and profile */}
             {/* {headerConfig.searchBar.enabled && (

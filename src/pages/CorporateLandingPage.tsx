@@ -1,11 +1,13 @@
 // pages/CorporateLandingPage.tsx
 // Standalone corporate landing page for employee rewards registration
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import StepCircle from '@/components/StepCircle';
 import CorporateContactModal from '@/components/CorporateContactModal';
-import { Award, Gift, Shield, UserPlus, Upload, CheckSquare, CreditCard, ShoppingCart, Mail } from "lucide-react";
+import { Award, Gift, Shield, UserPlus, Upload, CheckSquare, CreditCard, ShoppingCart, Mail, Home, ArrowLeft } from "lucide-react";
 
 export default function CorporateLandingPage() {
+    const [, setLocation] = useLocation();
     const [showContactModal, setShowContactModal] = useState(false);
 
     // Highlight chips data for corporate rewards
@@ -68,6 +70,26 @@ export default function CorporateLandingPage() {
             {/* Decorative glow layers */}
             <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-purple-300/30 blur-[140px] rounded-full pointer-events-none" />
             <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-indigo-300/20 blur-[160px] rounded-full pointer-events-none" />
+            
+            {/* Navigation Bar */}
+            <nav className="relative z-20 px-4 py-4 md:py-6">
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <button
+                        onClick={() => window.history.back()}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg transition-all text-gray-700 font-medium"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span>Back</span>
+                    </button>
+                    <button
+                        onClick={() => setLocation('/')}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-xl shadow-md hover:shadow-lg transition-all text-white font-medium"
+                    >
+                        <Home className="h-4 w-4" />
+                        <span>Home</span>
+                    </button>
+                </div>
+            </nav>
             
             <main className="relative w-full z-10">
                 {/* CORPORATE HERO BANNER */}

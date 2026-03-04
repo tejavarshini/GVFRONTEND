@@ -1,7 +1,24 @@
 import axios from "axios";
-import type { LoginResponse, LoginWithOtpRequest, LogoutRequest, ForgotPasswordRequest, ForgotPasswordResponse, ValidateTokenRequest, ValidateTokenResponse, ResetPasswordRequest, ResetPasswordResponse } from "@/types/auth";
+import type { LoginResponse, LoginWithOtpRequest, LogoutRequest, ForgotPasswordRequest, ForgotPasswordResponse, ValidateTokenRequest, ValidateTokenResponse, ResetPasswordRequest, ResetPasswordResponse, SignupRequest, LoginRequest } from "@/types/auth";
 
 const API_BASE_URL = import.meta.env.VITE_AUTH_API_URL;
+
+export const signup = async (data: SignupRequest): Promise<string> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/signup`, data);
+    return response.data; // Returns "Signup successful"
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 409) {
+      throw new Error(error.response.data);
+    }
+    throw error;
+  }
+};
+
+export const login = async (data: LoginRequest): Promise<LoginResponse> => {
+  const response = await axios.post(`${API_BASE_URL}/login`, data);
+  return response.data;
+};
 
 /** Decode JWT payload for userId (clientId), phoneNumber, email. */
 export function decodeJwtPayload(token: string): {
@@ -37,11 +54,11 @@ export const loginWithOtp = async (data: LoginWithOtpRequest): Promise<LoginResp
     userInfo:
       body.token && payload.userId
         ? {
-            name: "",
-            email: payload.email ?? "",
-            mobile: payload.phoneNumber ?? data.mobileNumber,
-            clientId: payload.userId,
-          }
+          name: "",
+          email: payload.email ?? "",
+          mobile: payload.phoneNumber ?? data.mobileNumber,
+          clientId: payload.userId,
+        }
         : null,
   };
 };

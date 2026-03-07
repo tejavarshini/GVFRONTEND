@@ -2,7 +2,8 @@
 // Reusable Contact Us modal with SabbPe theme
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { X, CheckCircle, Mail, User, Building2, Phone, MessageSquare } from 'lucide-react';
+import { X, CheckCircle, Mail, User, Building2, Phone, MessageSquare, Loader2 } from 'lucide-react';
+import { submitContactLead, type ContactRole } from '@/api/contactApi';
 
 interface ContactUsModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ export default function ContactUsModal({
   roleType = "Reseller"
 }: ContactUsModalProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -28,17 +31,44 @@ export default function ContactUsModal({
     message: ''
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  // Map roleType string to ContactRole enum
+  const getContactRole = (roleType: string): ContactRole => {
+    const roleMap: Record<string, ContactRole> = {
+      'Distributor': 'DISTRIBUTOR',
+      'Reseller': 'RESELLER',
+      'Corporate': 'CORPORATE'
+    };
+    return roleMap[roleType] || 'GENERAL';
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await submitContactLead({
+        role: getContactRole(roleType),
+        fullName: formData.fullName,
+        email: formData.email,
+        companyName: formData.companyName,
+        phoneNumber: formData.phoneNumber,
+        message: formData.message
+      });
+
       setSubmitted(true);
-    }, 500);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
     setSubmitted(false);
+    setLoading(false);
+    setError(null);
     setFormData({
       fullName: '',
       email: '',
@@ -186,12 +216,27 @@ export default function ContactUsModal({
                 </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg"
+                disabled={loading}
+                className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Send Message
+                {loading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
               </button>
             </form>
           )}

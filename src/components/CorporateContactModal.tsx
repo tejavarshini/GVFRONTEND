@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import { X, CheckCircle, Building2, MapPin, Map, FileText, CreditCard, MessageSquare, Upload, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import { submitContactLead } from '@/api/contactApi';
 
 interface CorporateContactModalProps {
   isOpen: boolean;
@@ -69,30 +70,22 @@ export default function CorporateContactModal({
         sampleInvoiceUrl = publicUrl;
       }
 
-      // Insert form data into database
-      const { error: insertError } = await supabase
-        .from('gift360_corporate_leads')
-        .insert([
-          {
-            organization_name: formData.organizationName,
-            city: formData.city,
-            state: formData.state,
-            pan_company: formData.pan,
-            gst_company: formData.gst,
-            sample_invoice_url: sampleInvoiceUrl,
-            message: formData.message
-          }
-        ]);
+      // Submit to backend API with role
+      await submitContactLead({
+        role: 'CORPORATE',
+        organizationName: formData.organizationName,
+        city: formData.city,
+        state: formData.state,
+        pan: formData.pan,
+        gst: formData.gst,
+        sampleInvoiceUrl: sampleInvoiceUrl,
+        message: formData.message
+      });
 
-      if (insertError) {
-        console.error('Error saving corporate lead:', insertError);
-        setError('Failed to submit your request. Please try again.');
-      } else {
-        setSubmitted(true);
-      }
+      setSubmitted(true);
     } catch (err) {
       console.error('Unexpected error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

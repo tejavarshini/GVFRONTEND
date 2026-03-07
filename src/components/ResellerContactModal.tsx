@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { X, CheckCircle, Building2, MapPin, Map, FileText, CreditCard, MessageSquare, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
+import { submitContactLead } from '@/api/contactApi';
 
 interface ResellerContactModalProps {
   isOpen: boolean;
@@ -32,28 +32,25 @@ export default function ResellerContactModal({
     setError(null);
 
     try {
-      const { error: insertError } = await supabase
-        .from('gift360_reseller_leads')
-        .insert([
-          {
-            organization_name: formData.organizationName,
-            city: formData.city,
-            state: formData.state,
-            pan: formData.pan,
-            gst: formData.gst,
-            message: formData.message
-          }
-        ]);
+      // Submit form data to backend API
+      await submitContactLead({
+        organizationName: formData.organizationName,
+        city: formData.city,
+        state: formData.state,
+        pan: formData.pan,
+        gst: formData.gst,
+        message: formData.message,
+        role: 'reseller'
+      });
 
-      if (insertError) {
-        console.error('Error saving reseller lead:', insertError);
-        setError('Failed to submit your request. Please try again.');
-      } else {
-        setSubmitted(true);
-      }
+      setSubmitted(true);
     } catch (err) {
       console.error('Unexpected error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

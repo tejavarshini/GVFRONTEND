@@ -9,6 +9,7 @@ import { Link } from 'wouter';
 import type { Brand } from '@/types/brand';
 import { Sparkles, Star, Tag, Award, MapPin } from 'lucide-react'; // ✅ Added MapPin
 import LayeredCategorySection from '@/components/LayeredCategorySection';
+import QuickBuyModal from '@/components/QuickBuyModal';
 
 
 // Category icon mapping - Only 9 categories from backend
@@ -54,6 +55,10 @@ export default function CategoriesSection({ buttonLabel = "Quick Buy" }: Categor
   
   // ✅ Layered scroll animation refs
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  
+  // ✅ Quick Buy Modal state
+  const [quickBuyBrand, setQuickBuyBrand] = useState<any | null>(null);
+  const [quickBuyBrandImage, setQuickBuyBrandImage] = useState<string>('');
   
 const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
   // Auto-select first category from preselected categories
@@ -1036,6 +1041,17 @@ useEffect(() => {
                                       onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
+                                        
+                                        // Get brand image
+                                        const imgUrl = brandImages?.text ||
+                                          brandImages?.thumbnail ||
+                                          brandImages?.featured ||
+                                          brandImages?.base ||
+                                          brandImages?.mobile ||
+                                          `https://images.gift360.io/${brandId}.png`;
+                                        
+                                        setQuickBuyBrand(brand);
+                                        setQuickBuyBrandImage(imgUrl);
                                       }}
                                       className="w-full mt-2 bg-primary text-white py-1.5 rounded-md font-semibold text-[10px] flex items-center justify-center gap-1 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm"
                                     >
@@ -1056,6 +1072,18 @@ useEffect(() => {
           );
         })}
 
+      {/* Quick Buy Modal */}
+      {quickBuyBrand && (
+        <QuickBuyModal
+          brand={quickBuyBrand}
+          isOpen={!!quickBuyBrand}
+          onClose={() => {
+            setQuickBuyBrand(null);
+            setQuickBuyBrandImage('');
+          }}
+          brandImage={quickBuyBrandImage}
+        />
+      )}
     </>
   );
 }

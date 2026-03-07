@@ -27,7 +27,7 @@ interface InitiatePaymentResponse {
   message?: string;
 }
 
-// SabbPe Wrapper API URL
+// SabbPe Wrapper API URL - Using external SabbPe API for UAT
 const SABBPE_API_URL = "https://pymntsuat.sabbpe.com";
 
 export function useEasebuzzInitiatePayment() {

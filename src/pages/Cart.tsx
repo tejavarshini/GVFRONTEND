@@ -132,8 +132,6 @@ export default function Cart() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const EasebuzzUrl = import.meta.env.VITE_EASEBUZZ_PAYMENT_URL || "https://testpay.easebuzz.in/pay";
-
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
 
   const [itemToDelete, setItemToDelete] = useState<{
@@ -447,11 +445,26 @@ export default function Cart() {
   ) => {
     console.log("Generating payment token for order:", orderNumber);
 
-    const gatewayParam = gateway === "easebuzz" ? "EASEBUZZ" : undefined;
+    // Generate unique merchant order ref
+    // eslint-disable-next-line react-hooks/purity
+    const uniqueOrderRef = `MOR-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-    generateTokenMutation.mutate(gatewayParam, {
-      onSuccess: (token) => {
-        console.log("Payment token generated successfully:", token);
+    generateTokenMutation.mutate(uniqueOrderRef, {
+      onSuccess: (tokenResponse) => {
+        console.log("Payment token generated successfully:", tokenResponse);
+
+        // Extract the actual token string
+        const token = tokenResponse.sabbpe_token;
+        
+        if (!token) {
+          console.error("No token in response:", tokenResponse);
+          toast({
+            title: "Token generation failed",
+            description: "No token received from server",
+            variant: "destructive",
+          });
+          return;
+        }
 
         toast({
           title: "Token Generated",
@@ -588,32 +601,18 @@ export default function Cart() {
       return;
     }
 
-    const frontendUrl =
-      import.meta.env.VITE_FRONTEND_URL || window.location.origin;
-    const dataToEncrypt = `${orderNumber}|${user?.clientId}`;
-    const encryptedOrderNumber = await encrypt(dataToEncrypt);
-
+    // Use Sabbpe initiate format as per the user's requirement
+    // Note: Do NOT include encrypted_order_ref - external SabbPe API doesn't expect it
     const paymentRequest = {
-      txnid: orderNumber,
-      amount: amount.toFixed(2),
-      productinfo:
-        import.meta.env.VITE_EASEBUZZ_PRODUCTINFO || "Product Purchase",
-      firstname:
-        import.meta.env.VITE_PAYMENT_CUSTFIRSTNAME || user?.name || "Customer",
-      phone:
-        import.meta.env.VITE_PAYMENT_CUSTMOBILE || user?.mobile || "9999999999",
-      email:
-        import.meta.env.VITE_PAYMENT_CUSTEMAIL ||
-        user?.email ||
-        "customer@example.com",
-      surl: import.meta.env.VITE_EASEBUZZ_CALLBACK_URL,
-      furl: import.meta.env.VITE_EASEBUZZ_CALLBACK_URL,
-      udf1: token,
-      udf2: frontendUrl,
-      udf3: encryptedOrderNumber,
-      address2: import.meta.env.VITE_EASEBUZZ_ADDRESS || "Address",
-      city: import.meta.env.VITE_EASEBUZZ_CITY || "City",
-      state: import.meta.env.VITE_EASEBUZZ_STATE || "State",
+      sabbpe_token: token,
+      amount: amount,
+      productinfo: import.meta.env.VITE_SABBPE_PRODUCT_INFO || "Gift Voucher Purchase",
+      frontend_url: "https://giftvouchersuat.sabbpe.com",
+      customer: {
+        firstname: import.meta.env.VITE_PAYMENT_CUSTFIRSTNAME || user?.name || "Test",
+        email: import.meta.env.VITE_PAYMENT_CUSTEMAIL || user?.email || "contact@sabbpe.com",
+        phone: import.meta.env.VITE_PAYMENT_CUSTMOBILE || user?.mobile || "9876543210",
+      },
     };
 
     console.log("📤 Easebuzz payment request:", paymentRequest);
@@ -636,10 +635,11 @@ export default function Cart() {
           return;
         }
 
-        const accessKey = response.data || response.accessKey;
+        // Sabbpe returns payment_url (with underscore)
+        const paymentUrl = response.payment_url || (response as { paymentUrl?: string }).paymentUrl || response.data;
 
-        if (!accessKey) {
-          console.error("❌ No access key in response");
+        if (!paymentUrl) {
+          console.error("❌ No payment URL in response:", response);
           toast({
             title: "Payment error",
             description: "Invalid payment response. Please try again.",
@@ -648,10 +648,8 @@ export default function Cart() {
           return;
         }
 
-        console.log("🔑 Redirecting to Easebuzz with access key:", accessKey);
+        console.log("🔑 Redirecting to payment URL:", paymentUrl);
 
-        const paymentUrl = `${EasebuzzUrl}/${accessKey}`;
-        console.log("💳 Payment URL:", paymentUrl);
         window.location.href = paymentUrl;
         clearCart();
       },

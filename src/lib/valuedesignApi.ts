@@ -22,8 +22,13 @@ const addAuthToken = (config: InternalAxiosRequestConfig) => {
 // Common response interceptor function
 const handleAuthError = (error: AxiosError) => {
   if (error.response?.status === 401) {
-    localStorage.removeItem("authUser");
-    window.dispatchEvent(new CustomEvent("auth:expired"));
+    // Don't fire auth:expired if we're on payment-result page
+    // This allows the payment result to be shown even if session is expired
+    const currentPath = window.location.pathname;
+    if (!currentPath.includes('/payment-result')) {
+      localStorage.removeItem("authUser");
+      window.dispatchEvent(new CustomEvent("auth:expired"));
+    }
   }
   return Promise.reject(error);
 };

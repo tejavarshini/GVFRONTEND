@@ -50,8 +50,10 @@ export const useSabbpePayment = (): SabbpePaymentResult => {
 
   const tokenMutation = useMutation({
     mutationFn: async (merchantOrderRef: string | undefined) => {
+      // Generate unique merchant order ref if not provided
+      const orderRef = merchantOrderRef || `MOR-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      
       // Step 1: Generate the Sabbpe token
-      const orderRef = merchantOrderRef || `ORDER-${Date.now()}`;
       const tokenResponse = await generatePaymentToken(orderRef);
       console.log("🔑 Generated Sabbpe token:", tokenResponse);
       
@@ -69,8 +71,8 @@ export const useSabbpePayment = (): SabbpePaymentResult => {
       let token = tokenMutation.data;
       
       if (!token) {
-        // Generate a new token if not already generated
-        const orderRef = params.merchantOrderRef || `ORDER-${Date.now()}`;
+        // Generate a new token if not already generated - use unique order ref
+        const orderRef = params.merchantOrderRef || `MOR-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
         const tokenResponse = await generatePaymentToken(orderRef);
         if (!tokenResponse.sabbpe_token) {
           throw new Error(tokenResponse.message || "Failed to generate token");

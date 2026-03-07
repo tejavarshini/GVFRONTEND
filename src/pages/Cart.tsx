@@ -607,7 +607,7 @@ export default function Cart() {
       sabbpe_token: token,
       amount: amount,
       productinfo: import.meta.env.VITE_SABBPE_PRODUCT_INFO || "Gift Voucher Purchase",
-      frontend_url: "https://giftvouchersuat.sabbpe.com",
+      frontend_url: (import.meta.env.VITE_PAYMENT_RETURN_URL || "http://localhost:5173/payment-result").replace(/\/payment-result\/?$/, ""),
       customer: {
         firstname: import.meta.env.VITE_PAYMENT_CUSTFIRSTNAME || user?.name || "Test",
         email: import.meta.env.VITE_PAYMENT_CUSTEMAIL || user?.email || "contact@sabbpe.com",

@@ -33,17 +33,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Listen for token expiry from axios interceptor
   useEffect(() => {
     const handleTokenExpired = () => {
-        // Clear cart merge flag on token expiry
-  if (user?.clientId) {
-    localStorage.removeItem(`cart_merged_${user.clientId}`);
-  }
+      const currentPath = window.location.pathname || "";
+      const isPaymentResultPage = currentPath.includes("/payment-result");
+
+      // Never force session-expired dialog on payment result page.
+      // Payment callback result should remain visible even on 401 from background calls.
+      if (isPaymentResultPage) {
+        console.warn("auth:expired ignored on payment-result page");
+        return;
+      }
+
+      // Clear cart merge flag on token expiry
+      if (user?.clientId) {
+        localStorage.removeItem(`cart_merged_${user.clientId}`);
+      }
       setUser(null);
       setShowExpiredDialog(true);
     };
 
     window.addEventListener("auth:expired", handleTokenExpired);
     return () => window.removeEventListener("auth:expired", handleTokenExpired);
-  }, []);
+  }, [user]);
 
   const handleLoginRedirect = () => {
     setShowExpiredDialog(false);

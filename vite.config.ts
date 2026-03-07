@@ -22,7 +22,7 @@ export default defineConfig({
         secure: false,
       },
       "/auth": {
-        target: "https://vdspbck.sabbpe.com",
+        target: "http://localhost:8080",
         changeOrigin: true,
         secure: false,
       },

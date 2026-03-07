@@ -61,6 +61,36 @@ export interface PaymentResponse {
     txnStatusCode: string;
     txnDescription: string;
   };
+  // Additional properties that might be returned
+  data?: string;
+  accessKey?: string;
+  status?: boolean | number;
+  message?: string;
+}
+
+// SabbPe Initiate Request - matches the exact payload structure needed
+export interface SabbPeInitiateRequest {
+  sabbpe_token: string;
+  productinfo: string;
+  amount: number;
+  frontend_url: string;
+  customer: {
+    firstname: string;
+    email: string;
+    phone: string;
+  };
+}
+
+// SabbPe Initiate Response
+export interface SabbPeInitiateResponse {
+  status: boolean;
+  transactionId?: string;
+  merchantOrderRef?: string;
+  paymentUrl?: string;
+  gateway?: string;
+  txnid?: string;
+  initiationStatus?: string;
+  message?: string;
 }
 
 // AtomPaynetz options

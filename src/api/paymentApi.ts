@@ -4,43 +4,58 @@ import type {
   TokenGenerationRequest,
   PaymentProcessRequest,
   PaymentResponse,
+  SabbPeInitiateRequest,
+  SabbPeInitiateResponse,
 } from "@/types/payment";
 
 const PAYMENT_URL = import.meta.env.VITE_PAYMENT_API_URL;
 
-// ✅ Generate Payment Token - NOW ACCEPTS GATEWAY PARAMETER
-export const generatePaymentToken = async (gateway?: string): Promise<string> => {
-  const now = new Date();
+// SabbPe Wrapper API URL
+const SABBPE_API_URL = "https://pymntsuat.sabbpe.com";
 
-  // Get local time components for IST
+// Helper to generate timestamp in required format
+const generateTimestamp = (): string => {
+  const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
   const seconds = String(now.getSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
 
-  const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+// ✅ Generate SabbPe Token using wrapper endpoint
+// Uses /sabbpe/v1/token instead of /PaymentGenerateToken
+export const generatePaymentToken = async (merchantOrderRef: string): Promise<{
+  status: boolean;
+  sabbpe_token?: string;
+  transaction_id?: string;
+  message?: string;
+}> => {
+  const timestamp = generateTimestamp();
 
-  // ✅ Set processor based on gateway parameter
-  const processor = gateway === "EASEBUZZ" ? "EASEBUZZ" : "NTTDATA";
-
-  const requestData: TokenGenerationRequest = {
-    transaction_userid: import.meta.env.VITE_PAYMENT_TRANSACTION_USERID,
-    transaction_merchantid: import.meta.env.VITE_PAYMENT_TRANSACTION_MERCHANTID,
-    client_Id: import.meta.env.VITE_PAYMENT_CLIENT_ID,
-    transaction_timestamp: timestamp,
-    processor: processor, // ✅ Dynamic processor
+  const requestData = {
+    sabbpe_userid: import.meta.env.VITE_SABBPE_USERID,
+    sabbpe_merchantid: import.meta.env.VITE_SABBPE_MERCHANTID,
+    sabbpe_password: import.meta.env.VITE_SABBPE_PASSWORD,
+    timestamp: timestamp,
+    merchant_order_ref: merchantOrderRef,
   };
 
-  console.log(`🔑 Generating ${processor} payment token with:`, requestData);
+  console.log("🔑 Generating SabbPe token with:", requestData);
 
-  const response = await axios.post<string>(
-    `${PAYMENT_URL}/PaymentGenerateToken`,
-    requestData
+  const response = await axios.post(
+    `${SABBPE_API_URL}/sabbpe/v1/token`,
+    requestData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
 
-  console.log(`✅ ${processor} token generated:`, response.data);
+  console.log("✅ SabbPe token response:", response.data);
 
   return response.data;
 };
@@ -114,6 +129,44 @@ export const initiatePaymentProcess = async (
   );
 
   console.log("✅ NTT Data payment response:", response.data);
+
+  return response.data;
+};
+
+// ✅ Initiate Sabbpe Payment - Direct payment with token
+// This is the new flow: generate token first, then initiate payment with that token
+export const initiateSabbpePayment = async (
+  sabbpeToken: string,
+  amount: number,
+  productinfo: string,
+  frontendUrl: string,
+  customer: {
+    firstname: string;
+    email: string;
+    phone: string;
+  }
+): Promise<SabbPeInitiateResponse> => {
+  const payload: SabbPeInitiateRequest = {
+    sabbpe_token: sabbpeToken,
+    productinfo: productinfo,
+    amount: amount,
+    frontend_url: frontendUrl,
+    customer: customer,
+  };
+
+  console.log("💳 Initiating Sabbpe payment with:", payload);
+
+  const response = await axios.post<SabbPeInitiateResponse>(
+    `${SABBPE_API_URL}/sabbpe/v1/initiate`,
+    payload,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  console.log("✅ Sabbpe initiate response:", response.data);
 
   return response.data;
 };

@@ -2,41 +2,40 @@
 import { useMutation } from '@tanstack/react-query';
 
 interface InitiatePaymentRequest {
-  txnid: string;         
-  amount: string;
+  sabbpe_token: string;
+  amount: number;
   productinfo: string;
-  firstname: string;
-  phone: string;
-  email: string;
-  surl: string;
-  furl: string;
-  udf1?: string;
-  udf2?: string;
-  udf3?: string;
-  address2?: string;
-  city?: string;
-  state?: string;
+  frontend_url: string;
+  encrypted_order_ref: string;
+  customer: {
+    firstname: string;
+    email: string;
+    phone: string;
+  };
 }
 
 interface InitiatePaymentResponse {
-  status: "INITIATED" | "failed" | number;
-  message: string;
-  accessKey?: string; 
-  data?: string;      
-  paymentUrl?: string;
+  status: boolean | number;
+  data?: string;
+  accessKey?: string;
+  transaction_id?: string;
+  merchant_order_ref?: string;
+  payment_url?: string;
+  gateway?: string;
   txnid?: string;
-  masterTransactionId?: string;
+  initiation_status?: string;
+  message?: string;
 }
 
-// ✅ Get API URL from environment
-const API_BASE_URL = import.meta.env.VITE_PAYMENT_API_URL || 'http://localhost:8080/api/v1';
+// SabbPe Wrapper API URL
+const SABBPE_API_URL = "https://pymntsuat.sabbpe.com";
 
 export function useEasebuzzInitiatePayment() {
   return useMutation({
-    mutationFn: async (request: InitiatePaymentRequest): Promise<InitiatePaymentResponse> => {
-      console.log("🌐 Calling API:", `${API_BASE_URL}/easebuzz/initiate`);
+    mutationFn: async (request: any): Promise<InitiatePaymentResponse> => {
+      console.log("🌐 Calling SabbPe wrapper API:", `${SABBPE_API_URL}/sabbpe/v1/initiate`);
       
-      const response = await fetch(`${API_BASE_URL}/easebuzz/initiate`, {
+      const response = await fetch(`${SABBPE_API_URL}/sabbpe/v1/initiate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

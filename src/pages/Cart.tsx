@@ -221,40 +221,6 @@ export default function Cart() {
     );
   }
 
-  // Loading state
-  if (cartLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-muted/30">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-        </main>
-        <Footer />
-        <MobileBottomNav />
-      </div>
-    );
-  }
-
-  // Error state
-  if (cartError) {
-    return (
-      <div className="min-h-screen flex flex-col bg-muted/30">
-        <Header />
-        <main className="flex-1 flex items-center justify-center px-4">
-          <div className="text-center space-y-4">
-            <h1 className="text-2xl font-bold">Error Loading Cart</h1>
-            <p className="text-muted-foreground">Please try again</p>
-            <Link href="/brands">
-              <Button>Back to Shopping</Button>
-            </Link>
-          </div>
-        </main>
-        <Footer />
-        <MobileBottomNav />
-      </div>
-    );
-  }
-
   // Safety check - remove the old one at line 104-111
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
@@ -657,7 +623,7 @@ export default function Cart() {
         console.log("✅ Easebuzz response:", response);
 
         const isSuccess =
-          response.status === 1 || response.status === "INITIATED";
+          response.status === 1 || response.status === true;
 
         if (!isSuccess) {
           toast({

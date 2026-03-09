@@ -1,10 +1,25 @@
 const SECRET_KEY_TEXT = import.meta.env.VITE_ENCRYPTION_KEY || "fallback-key-32-chars-long!!!";
 const SECRET_IV_TEXT = import.meta.env.VITE_ENCRYPTION_IV || "fallback-iv-16ch";
 
+const normalizeBase64 = (value: string): string => {
+  if (!value) return "";
+  const sanitized = value
+    .trim()
+    .replace(/ /g, "+")
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const padding = sanitized.length % 4;
+  if (padding === 0) return sanitized;
+  if (padding === 2) return sanitized + "==";
+  if (padding === 3) return sanitized + "=";
+  return sanitized;
+};
+
 // Decode Base64 key if provided (backend uses Base64 encoded keys)
 const decodeBase64 = (encoded: string): Uint8Array => {
   try {
-    const binary = atob(encoded);
+    const binary = atob(normalizeBase64(encoded));
     const bytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i);
@@ -96,7 +111,7 @@ export const decrypt = async (encrypted: string): Promise<string> => {
     const key = await importKey();
     const iv = getIvBytes();
     
-    const binaryString = atob(encrypted);
+    const binaryString = atob(normalizeBase64(encrypted));
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i);

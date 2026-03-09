@@ -74,6 +74,7 @@ export interface SabbPeInitiateRequest {
   productinfo: string;
   amount: number;
   frontend_url: string;
+  encrypted_order_ref?: string;
   customer: {
     firstname: string;
     email: string;

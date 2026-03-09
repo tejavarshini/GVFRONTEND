@@ -601,13 +601,24 @@ export default function Cart() {
       return;
     }
 
-    // Use Sabbpe initiate format as per the user's requirement
-    // Note: Do NOT include encrypted_order_ref - external SabbPe API doesn't expect it
+    // Use SabbPe initiate format.
+    // Send encrypted_order_ref so callback txnid maps to the actual order number.
+    if (!user?.clientId) {
+      toast({
+        title: "Error",
+        description: "User information missing. Please login again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const encryptedOrderRef = await encrypt(`${orderNumber}|${user.clientId}`);
+
     const paymentRequest = {
       sabbpe_token: token,
       amount: amount,
       productinfo: import.meta.env.VITE_SABBPE_PRODUCT_INFO || "Gift Voucher Purchase",
       frontend_url: (import.meta.env.VITE_PAYMENT_RETURN_URL || "http://localhost:5173/payment-result").replace(/\/payment-result\/?$/, ""),
+      encrypted_order_ref: encryptedOrderRef,
       customer: {
         firstname: import.meta.env.VITE_PAYMENT_CUSTFIRSTNAME || user?.name || "Test",
         email: import.meta.env.VITE_PAYMENT_CUSTEMAIL || user?.email || "contact@sabbpe.com",

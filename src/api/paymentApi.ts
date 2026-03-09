@@ -140,6 +140,7 @@ export const initiateSabbpePayment = async (
   amount: number,
   productinfo: string,
   frontendUrl: string,
+  encryptedOrderRef: string | undefined,
   customer: {
     firstname: string;
     email: string;
@@ -151,6 +152,7 @@ export const initiateSabbpePayment = async (
     productinfo: productinfo,
     amount: amount,
     frontend_url: frontendUrl,
+    encrypted_order_ref: encryptedOrderRef,
     customer: customer,
   };
 

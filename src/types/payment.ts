@@ -87,10 +87,12 @@ export interface SabbPeInitiateResponse {
   transactionId?: string;
   merchantOrderRef?: string;
   paymentUrl?: string;
+  payment_url?: string;
   gateway?: string;
   txnid?: string;
   initiationStatus?: string;
   message?: string;
+  data?: string;
 }
 
 // AtomPaynetz options

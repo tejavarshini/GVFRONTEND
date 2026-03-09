@@ -15,6 +15,9 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
+    headers: {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+    },
     proxy: {
       "/api": {
         target: "https://vdspbck.sabbpe.com",
@@ -22,6 +25,11 @@ export default defineConfig({
         secure: false,
       },
       "/auth": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/sabbpe": {
         target: "http://localhost:8080",
         changeOrigin: true,
         secure: false,

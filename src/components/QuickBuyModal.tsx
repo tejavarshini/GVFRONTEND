@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Plus, Minus, ShoppingCart, ChevronDown, Loader2 } from "lucide-react";
 import type { Brand } from "@/types/brand";
-// import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useBrandDetails } from "@/hooks/useBrandDetails";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -29,11 +29,11 @@ export default function QuickBuyModal({
   const [amount, setAmount] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
+  const lastClickTime = useRef<number>(0);
 
   const { user } = useAuthContext();
-//   const { addToCart } = useCart(user?.clientId);
+  const { addToCart, cart } = useCart(user?.clientId);
   const { toast } = useToast();
-//   const { cart } = useCart(user?.clientId);
 const createOrderMutation = useCreateOrder();
 const generateTokenMutation = useGeneratePaymentToken();
 const paymentMutation = useInitiatePayment();
@@ -99,6 +99,34 @@ if (isFixedType && brandDetails?.DenominationList?.length > 0) {
       return !error && Number(amount) >= minPrice && Number(amount) <= maxPrice;
     }
     return false;
+  };
+
+  const handleAddToCart = () => {
+    if (!isValidAmount()) return;
+
+    const now = Date.now();
+    if (now - lastClickTime.current < 800) return;
+    lastClickTime.current = now;
+
+    addToCart({
+      brandId: brand.BrandId,
+      brandName: brand.BrandName,
+      quantity: quantity,
+      unitValue: Number(amount),
+      image: brandImage,
+    });
+
+    toast({
+      title: user?.clientId ? "Added to Cart" : "Added to Cart (Guest)",
+      description: user?.clientId
+        ? `${quantity}x ${brand.BrandName} voucher(s) of ₹${amount} each added to cart`
+        : `${quantity}x ${brand.BrandName} voucher(s) saved. Login to checkout.`,
+    });
+
+    setQuantity(1);
+    if (isVariableType) {
+      setAmount("");
+    }
   };
 
 const handlePayNow = async () => {
@@ -234,14 +262,24 @@ const validateOrder = (orderNumber: string, totalAmount: number) => {
 
 const generatePaymentToken = (amount: number, orderNumber: string) => {
   console.log("Generating payment token for order:", orderNumber);
-  generateTokenMutation.mutate(undefined, {
-    onSuccess: (token) => {
-      console.log("Payment token generated successfully:", token);
+  generateTokenMutation.mutate(orderNumber, {
+    onSuccess: (tokenResponse) => {
+      console.log("Payment token generated successfully:", tokenResponse);
+      
+      if (!tokenResponse.sabbpe_token) {
+        toast({
+          title: "Token generation failed",
+          description: tokenResponse.message || "Failed to generate payment token.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       toast({
         title: "Token Generated",
         description: "Payment token generated successfully.",
       });
-      initiatePayment(amount, orderNumber, token);
+      initiatePayment(amount, orderNumber, tokenResponse.sabbpe_token);
     },
     onError: (error: any) => {
       console.error("Token generation error:", error);
@@ -501,24 +539,37 @@ const isProcessing =
 
 {/* Footer */}
 <div className="p-4 sm:p-6 border-t border-border">
-  <button
-    disabled={!isValidAmount() || isProcessing || scriptStatus !== "ready"}
-    onClick={handlePayNow}
-    className={`w-full h-12 rounded-lg text-base font-bold flex items-center justify-center gap-2 transition-all ${
-      isValidAmount() && !isProcessing && scriptStatus === "ready"
-        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
-        : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
-    }`}
-  >
-    <ShoppingCart className="h-5 w-5" />
-    {scriptStatus === "loading" && "Loading Payment System..."}
-    {scriptStatus === "error" && "Payment System Error"}
-    {createOrderMutation.isPending && "Creating Order..."}
-    {validateOrderMutation.isPending && "Validating Order..."}
-    {generateTokenMutation.isPending && "Generating Token..."}
-    {paymentMutation.isPending && "Initiating Payment..."}
-    {!isProcessing && scriptStatus === "ready" && `Pay ₹${(Number(amount) * quantity).toLocaleString()}`}
-  </button>
+  <div className="flex gap-3">
+    <button
+      disabled={!isValidAmount()}
+      onClick={handleAddToCart}
+      className={`flex-1 h-12 rounded-lg text-base font-bold flex items-center justify-center gap-2 transition-all border-2 ${
+        isValidAmount()
+          ? "border-primary text-primary hover:bg-primary/10"
+          : "border-muted text-muted-foreground cursor-not-allowed opacity-60"
+      }`}
+    >
+      <ShoppingCart className="h-5 w-5" />
+      Add to Cart
+    </button>
+    <button
+      disabled={!isValidAmount() || isProcessing || scriptStatus !== "ready"}
+      onClick={handlePayNow}
+      className={`flex-1 h-12 rounded-lg text-base font-bold flex items-center justify-center gap-2 transition-all ${
+        isValidAmount() && !isProcessing && scriptStatus === "ready"
+          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+          : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+      }`}
+    >
+      {scriptStatus === "loading" && "Loading..."}
+      {scriptStatus === "error" && "Error"}
+      {createOrderMutation.isPending && "Creating..."}
+      {validateOrderMutation.isPending && "Validating..."}
+      {generateTokenMutation.isPending && "Token..."}
+      {paymentMutation.isPending && "Processing..."}
+      {!isProcessing && scriptStatus === "ready" && "Pay Now"}
+    </button>
+  </div>
 </div>
 
         </div>

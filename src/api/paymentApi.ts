@@ -10,7 +10,7 @@ import type {
 
 const PAYMENT_URL = import.meta.env.VITE_PAYMENT_API_URL;
 
-// SabbPe Wrapper API URL
+// SabbPe API URL - Use external SabbPe API directly
 const SABBPE_API_URL = "https://pymntsuat.sabbpe.com";
 
 // Helper to generate timestamp in required format

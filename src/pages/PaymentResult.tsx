@@ -25,6 +25,7 @@ export default function PaymentResult() {
   const [couponsFetched, setCouponsFetched] = useState(false);
   const [decryptedOrderNumber, setDecryptedOrderNumber] = useState<string>("");
   const [decryptedClientId, setDecryptedClientId] = useState<string>("");
+  const [isDecrypted, setIsDecrypted] = useState(false);
 
   // Parse params for BOTH gateways (NTT Data & Easebuzz)
   const paymentData = useMemo(() => {
@@ -128,11 +129,14 @@ export default function PaymentResult() {
           const clientIdFromToken = parts[1] || "";
           setDecryptedOrderNumber(orderNumber);
           setDecryptedClientId(clientIdFromToken);
+          setIsDecrypted(true); // Mark decryption as successful
           console.log("✅ Order Number:", orderNumber);
           console.log("✅ Client ID from token:", clientIdFromToken);
         } catch (error) {
           console.error("❌ Decryption failed:", error);
+          // Still set the encrypted value as fallback so page can display it
           setDecryptedOrderNumber(paymentData.encryptedTransactionId);
+          setIsDecrypted(false); // Mark decryption as failed
         }
       }
     };
@@ -150,13 +154,21 @@ export default function PaymentResult() {
   }, []);
 
   // Update order status and fetch coupons
+  // The payment result should always display regardless of auth status
+  // API failures should NOT trigger redirects to login
   useEffect(() => {
-    if (!loading && !statusUpdated && paymentData.encryptedTransactionId) {
+    // Only update order status after decryption is complete OR if decryption failed but we have fallback data
+    // This prevents race conditions where API is called before decryption finishes
+    // The isDecrypted flag ensures we wait for the decryption attempt to complete
+    const hasValidOrderNumber = isDecrypted || (!isDecrypted && decryptedOrderNumber);
+    
+    if (!loading && !statusUpdated && paymentData.encryptedTransactionId && hasValidOrderNumber) {
       const orderStatus = paymentData.status === "success" ? "PAID" : "FAILED";
 
+      // Use the decrypted order number (or fallback encrypted value) for the API call
       updateStatusMutation.mutate(
         {
-          orderNumber: paymentData.encryptedTransactionId,
+          orderNumber: decryptedOrderNumber,
           status: orderStatus,
         },
         {
@@ -187,7 +199,7 @@ export default function PaymentResult() {
 
               console.log("🔑 Client ID resolved:", clientId);
 
-              // Fetch coupons
+              // Fetch coupons - but skip if no auth
               if (clientId && !couponsFetched && decryptedOrderNumber) {
                 fetchCouponsMutation.mutate(
                   {
@@ -216,13 +228,19 @@ export default function PaymentResult() {
               }
             }
           },
-          onError: () => {
-            toast({
-              title: "Update Required",
-              description:
-                "Payment received but order status needs verification. Please contact support if this persists.",
-              variant: "destructive",
-            });
+          onError: (error: any) => {
+            // Don't show session expired dialog for payment result page
+            // Just show the payment result without updating status
+            console.warn("Order status update failed:", error);
+            setStatusUpdated(true); // Mark as updated to prevent retry
+            
+            if (paymentData.status === "success") {
+              toast({
+                title: "Payment Successful",
+                description: "Order is being processed. Check your orders for status.",
+                variant: "default",
+              });
+            }
           },
         }
       );
@@ -240,7 +258,8 @@ export default function PaymentResult() {
     paymentData.status,
     decryptedOrderNumber,
     decryptedClientId,
-    couponsFetched
+    couponsFetched,
+    isDecrypted,
   ]);
 
   // Status UI helpers

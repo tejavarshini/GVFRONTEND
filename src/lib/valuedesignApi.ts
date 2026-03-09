@@ -24,8 +24,9 @@ const handleAuthError = (error: AxiosError) => {
   if (error.response?.status === 401) {
     // Don't fire auth:expired if we're on payment-result page
     // This allows the payment result to be shown even if session is expired
-    const currentPath = window.location.pathname;
-    if (!currentPath.includes('/payment-result')) {
+    const currentPath = window.location.pathname || "";
+    const isPaymentResultPage = /^\/payment-result\/?$/i.test(currentPath);
+    if (!isPaymentResultPage) {
       localStorage.removeItem("authUser");
       window.dispatchEvent(new CustomEvent("auth:expired"));
     }

@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useLocation, useSearch } from "wouter";
 import { useUpdateOrderStatus } from "@/hooks/useUpdateOrderStatus";
 import { useFetchCoupons } from "@/hooks/useFetchCoupons";
+import { useOrders } from "@/hooks/useOrders";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Clock, Loader2 } from "lucide-react";
 import { decrypt } from "@/utils/encryption";
+import type { CouponItem } from "@/types/order";
 
 export default function PaymentResult() {
   const [, setLocation] = useLocation();
@@ -26,6 +28,8 @@ export default function PaymentResult() {
   const [decryptedOrderNumber, setDecryptedOrderNumber] = useState<string>("");
   const [decryptedClientId, setDecryptedClientId] = useState<string>("");
   const [isDecrypted, setIsDecrypted] = useState(false);
+  const resolvedClientId = decryptedClientId || user?.clientId;
+  const { data: ordersData } = useOrders(resolvedClientId || undefined);
 
   // Parse params for BOTH gateways (NTT Data & Easebuzz)
   const paymentData = useMemo(() => {
@@ -124,9 +128,15 @@ export default function PaymentResult() {
       if (paymentData.encryptedTransactionId) {
         try {
           const decrypted = await decrypt(paymentData.encryptedTransactionId);
+          if (!decrypted || !decrypted.includes("|")) {
+            throw new Error("Invalid decrypted payload");
+          }
           const parts = decrypted.split("|");
-          const orderNumber = parts[0];
-          const clientIdFromToken = parts[1] || "";
+          const orderNumber = parts[0]?.trim() || "";
+          const clientIdFromToken = parts[1]?.trim() || "";
+          if (!orderNumber) {
+            throw new Error("Empty order number after decryption");
+          }
           setDecryptedOrderNumber(orderNumber);
           setDecryptedClientId(clientIdFromToken);
           setIsDecrypted(true); // Mark decryption as successful
@@ -134,8 +144,10 @@ export default function PaymentResult() {
           console.log("✅ Client ID from token:", clientIdFromToken);
         } catch (error) {
           console.error("❌ Decryption failed:", error);
-          // Still set the encrypted value as fallback so page can display it
-          setDecryptedOrderNumber(paymentData.encryptedTransactionId);
+          // Do not show encrypted txnid as order number.
+          // Show order number only when decryption succeeds.
+          setDecryptedOrderNumber("");
+          setDecryptedClientId("");
           setIsDecrypted(false); // Mark decryption as failed
         }
       }
@@ -308,6 +320,52 @@ export default function PaymentResult() {
     }
   };
 
+  const orderDetails = useMemo(() => {
+    if (!ordersData?.orders || !decryptedOrderNumber) {
+      return null;
+    }
+    return ordersData.orders.find((o) => o.order_number === decryptedOrderNumber) || null;
+  }, [ordersData, decryptedOrderNumber]);
+
+  const voucherItems = useMemo<CouponItem[]>(() => {
+    if (!orderDetails?.items?.length) {
+      return [];
+    }
+    return orderDetails.items.flatMap((item) =>
+      item.coupons?.flatMap((coupon) =>
+        coupon.vd_raw_response?.brand_details?.flatMap((brand) => brand.items || []) || []
+      ) || []
+    );
+  }, [orderDetails]);
+
+  const parsedPaymentAmount = useMemo(() => {
+    if (typeof orderDetails?.total_amount === "number") {
+      return orderDetails.total_amount;
+    }
+    if (!voucherItems.length) {
+      return null;
+    }
+    const total = voucherItems.reduce((sum, v) => {
+      const numeric = Number(String(v.balanceTotal || "0").replace(/[^0-9.]/g, ""));
+      return sum + (Number.isFinite(numeric) ? numeric : 0);
+    }, 0);
+    return total > 0 ? total : null;
+  }, [orderDetails, voucherItems]);
+
+  const statusLabel =
+    paymentData.status === "success"
+      ? "SUCCESS"
+      : paymentData.status === "pending"
+      ? "PENDING"
+      : "FAILED";
+
+  const maskCard = (value: string) => {
+    if (!value) return "N/A";
+    const trimmed = value.replace(/\s+/g, "");
+    if (trimmed.length <= 4) return trimmed;
+    return `${"*".repeat(Math.max(trimmed.length - 4, 0))}${trimmed.slice(-4)}`;
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-muted/30 to-muted/10">
       <Header />
@@ -338,6 +396,43 @@ export default function PaymentResult() {
                 <p className="text-xl sm:text-2xl font-mono font-bold tracking-wide text-foreground">
                   #{decryptedOrderNumber}
                 </p>
+              </div>
+            )}
+
+            {!loading && (
+              <div className="p-5 rounded-xl border bg-muted/20 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="p-3 rounded-lg bg-background border">
+                    <p className="text-muted-foreground mb-1">Status</p>
+                    <p className="font-semibold">{statusLabel}</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-background border">
+                    <p className="text-muted-foreground mb-1">Amount</p>
+                    <p className="font-semibold">
+                      {parsedPaymentAmount != null ? `₹${parsedPaymentAmount.toFixed(2)}` : "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold mb-2">Voucher Details</p>
+                  {voucherItems.length > 0 ? (
+                    <div className="space-y-2 max-h-56 overflow-auto pr-1">
+                      {voucherItems.map((voucher, idx) => (
+                        <div key={`${voucher.getCardNo}-${idx}`} className="p-3 rounded-lg border bg-background text-sm">
+                          <p><span className="text-muted-foreground">Card:</span> {maskCard(voucher.getCardNo)}</p>
+                          <p><span className="text-muted-foreground">PIN:</span> {voucher.getCardPin || "N/A"}</p>
+                          <p><span className="text-muted-foreground">Amount:</span> {voucher.balanceTotal ? `₹${voucher.balanceTotal}` : "N/A"}</p>
+                          <p><span className="text-muted-foreground">Expiry:</span> {voucher.getExpiryDate || "N/A"}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Vouchers are being processed. Please refresh after a few moments.
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 

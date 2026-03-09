@@ -32,25 +32,20 @@ export default function ResellerContactModal({
     setError(null);
 
     try {
-      // Submit form data to backend API
       await submitContactLead({
+        role: 'RESELLER',
         organizationName: formData.organizationName,
         city: formData.city,
         state: formData.state,
         pan: formData.pan,
         gst: formData.gst,
-        message: formData.message,
-        role: 'reseller'
+        message: formData.message
       });
 
       setSubmitted(true);
     } catch (err) {
       console.error('Unexpected error:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

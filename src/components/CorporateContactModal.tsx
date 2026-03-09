@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import { X, CheckCircle, Building2, MapPin, Map, FileText, CreditCard, MessageSquare, Upload, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 import { submitContactLead } from '@/api/contactApi';
 
 interface CorporateContactModalProps {
@@ -42,26 +43,49 @@ export default function CorporateContactModal({
     setError(null);
 
     try {
-      // Submit form data to backend API with file upload if present
+      let sampleInvoiceUrl = '';
+
+      // Upload file to Supabase Storage if provided
+      if (uploadedFile) {
+        const fileExt = uploadedFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `corporate-invoices/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('form-uploads')
+          .upload(filePath, uploadedFile);
+
+        if (uploadError) {
+          console.error('Error uploading file:', uploadError);
+          setError('Failed to upload invoice file. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('form-uploads')
+          .getPublicUrl(filePath);
+
+        sampleInvoiceUrl = publicUrl;
+      }
+
+      // Submit to backend API with role
       await submitContactLead({
+        role: 'CORPORATE',
         organizationName: formData.organizationName,
         city: formData.city,
         state: formData.state,
         pan: formData.pan,
         gst: formData.gst,
-        message: formData.message,
-        role: 'corporate',
-        sampleInvoiceFile: uploadedFile || undefined
+        sampleInvoiceUrl: sampleInvoiceUrl,
+        message: formData.message
       });
 
       setSubmitted(true);
     } catch (err) {
       console.error('Unexpected error:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -228,12 +252,13 @@ export default function CorporateContactModal({
               {/* Upload Sample Proforma Invoice */}
               <div>
                 <label htmlFor="invoice" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Upload Sample Proforma Invoice <span className="text-gray-400">(Optional)</span>
+                  Upload Sample Proforma Invoice <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="file"
                     id="invoice"
+                    required
                     onChange={handleFileChange}
                     accept=".pdf,.doc,.docx,.xls,.xlsx"
                     className="hidden"

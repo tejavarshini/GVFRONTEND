@@ -127,7 +127,8 @@ export default function PaymentResult() {
     const decryptTransactionId = async () => {
       if (paymentData.encryptedTransactionId) {
         try {
-          const decrypted = await decrypt(paymentData.encryptedTransactionId);
+          const normalizedTxnId = (paymentData.encryptedTransactionId || "").trim().replace(/ /g, "+");
+          const decrypted = await decrypt(normalizedTxnId);
           if (!decrypted || !decrypted.includes("|")) {
             throw new Error("Invalid decrypted payload");
           }

@@ -32,7 +32,7 @@ export default function QuickBuyModal({
   const lastClickTime = useRef<number>(0);
 
   const { user } = useAuthContext();
-  const { addToCart, cart } = useCart(user?.clientId);
+  const { addToCart } = useCart(user?.clientId);
   const { toast } = useToast();
 const createOrderMutation = useCreateOrder();
 const generateTokenMutation = useGeneratePaymentToken();

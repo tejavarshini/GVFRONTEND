@@ -512,9 +512,9 @@ export default function PaymentResult() {
                   <Button
                     size="lg"
                     className="flex-1 h-12 text-base font-semibold shadow-md hover:shadow-lg transition-all"
-                    onClick={() => setLocation("/orders")}
+                    onClick={() => setLocation("/cart")}
                   >
-                    View My Orders
+                    Back to Cart
                   </Button>
                   <Button
                     size="lg"

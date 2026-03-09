@@ -619,6 +619,7 @@ export default function Cart() {
       productinfo: import.meta.env.VITE_SABBPE_PRODUCT_INFO || "Gift Voucher Purchase",
       frontend_url: (import.meta.env.VITE_PAYMENT_RETURN_URL || "http://localhost:5173/payment-result").replace(/\/payment-result\/?$/, ""),
       encrypted_order_ref: encryptedOrderRef,
+      client_id: user.clientId, // ✅ Explicitly pass client_id for udf2
       customer: {
         firstname: import.meta.env.VITE_PAYMENT_CUSTFIRSTNAME || user?.name || "Test",
         email: import.meta.env.VITE_PAYMENT_CUSTEMAIL || user?.email || "contact@sabbpe.com",

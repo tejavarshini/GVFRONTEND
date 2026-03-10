@@ -195,10 +195,17 @@ export default function PaymentResult() {
     if (!loading && !statusUpdated && paymentData.encryptedTransactionId && hasValidOrderNumber) {
       const orderStatus = paymentData.status === "success" ? "PAID" : "FAILED";
 
+      // Normalize Base64 before sending to backend (spaces from URL become +, URL-safe chars normalized)
+      const normalizedEncryptedData = paymentData.encryptedTransactionId
+        .trim()
+        .replace(/ /g, "+")
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
       // Send encrypted transaction ID to backend (do not decrypt)
       updateStatusMutation.mutate(
         {
-          orderNumber: paymentData.encryptedTransactionId,
+          orderNumber: normalizedEncryptedData,
           status: orderStatus,
         },
         {

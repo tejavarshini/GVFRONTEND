@@ -16,49 +16,42 @@ const normalizeBase64 = (value: string): string => {
   return sanitized;
 };
 
-// Decode Base64 key if provided (backend uses Base64 encoded keys)
-const decodeBase64 = (encoded: string): Uint8Array => {
-  try {
-    const binary = atob(normalizeBase64(encoded));
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes;
-  } catch (e) {
-    // If not valid Base64, treat as plain text
-    const encoder = new TextEncoder();
-    return encoder.encode(encoded);
-  }
-};
-
-// Convert string key to 32-byte array (AES-256)
+// Convert string key to 32-byte array (AES-256) - Java backend expects raw UTF-8 bytes
 const getKeyBytes = (): Uint8Array<ArrayBuffer> => {
-  // Try Base64 decode first, then fall back to text encoding
-  let keyBytes = decodeBase64(SECRET_KEY_TEXT);
+  const encoder = new TextEncoder();
+  const keyBytes = encoder.encode(SECRET_KEY_TEXT);
   
   // Ensure exactly 32 bytes for AES-256
   if (keyBytes.length < 32) {
-    // Pad with zeros or slice to 32
+    // Pad with zeros if too short
     const padded = new Uint8Array(32);
-    padded.set(keyBytes.slice(0, 32));
+    padded.set(keyBytes);
     return padded as Uint8Array<ArrayBuffer>;
   }
-  return keyBytes.slice(0, 32) as Uint8Array<ArrayBuffer>;
+  if (keyBytes.length > 32) {
+    // Truncate if too long
+    return keyBytes.slice(0, 32) as Uint8Array<ArrayBuffer>;
+  }
+  return keyBytes as Uint8Array<ArrayBuffer>;
 };
 
-// Convert string IV to 16-byte array
+// Convert string IV to 16-byte array - Java backend expects raw UTF-8 bytes
 const getIvBytes = (): Uint8Array<ArrayBuffer> => {
-  // Try Base64 decode first, then fall back to text encoding
-  let ivBytes = decodeBase64(SECRET_IV_TEXT);
+  const encoder = new TextEncoder();
+  const ivBytes = encoder.encode(SECRET_IV_TEXT);
   
   // Ensure exactly 16 bytes
   if (ivBytes.length < 16) {
+    // Pad with zeros if too short
     const padded = new Uint8Array(16);
-    padded.set(ivBytes.slice(0, 16));
+    padded.set(ivBytes);
     return padded as Uint8Array<ArrayBuffer>;
   }
-  return ivBytes.slice(0, 16) as Uint8Array<ArrayBuffer>;
+  if (ivBytes.length > 16) {
+    // Truncate if too long
+    return ivBytes.slice(0, 16) as Uint8Array<ArrayBuffer>;
+  }
+  return ivBytes as Uint8Array<ArrayBuffer>;
 };
 
 // Import key for Web Crypto API

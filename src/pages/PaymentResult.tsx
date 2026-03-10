@@ -24,12 +24,16 @@ export default function PaymentResult() {
 
   const [loading, setLoading] = useState(true);
   const [statusUpdated, setStatusUpdated] = useState(false);
+  const [orderStatusUpdateSuccess, setOrderStatusUpdateSuccess] = useState(false);
   const [couponsFetched, setCouponsFetched] = useState(false);
   const [decryptedOrderNumber, setDecryptedOrderNumber] = useState<string>("");
   const [decryptedClientId, setDecryptedClientId] = useState<string>("");
   const [isDecrypted, setIsDecrypted] = useState(false);
-  const resolvedClientId = decryptedClientId || user?.clientId;
-  const { data: ordersData } = useOrders(resolvedClientId || undefined);
+  const [clientIdMismatch, setClientIdMismatch] = useState(false);
+  
+  // Use user?.clientId consistently for fetching orders - this is the authoritative source
+  const ordersClientId = user?.clientId;
+  const { data: ordersData } = useOrders(ordersClientId);
 
   // Parse params for BOTH gateways (NTT Data & Easebuzz)
   const paymentData = useMemo(() => {
@@ -141,8 +145,21 @@ export default function PaymentResult() {
           setDecryptedOrderNumber(orderNumber);
           setDecryptedClientId(clientIdFromToken);
           setIsDecrypted(true); // Mark decryption as successful
+          
+          // Validate clientId match - compare decrypted clientId with user clientId
+          if (clientIdFromToken && user?.clientId && clientIdFromToken !== user.clientId) {
+            console.warn("⚠️ Client ID mismatch detected!", {
+              tokenClientId: clientIdFromToken,
+              userClientId: user.clientId
+            });
+            setClientIdMismatch(true);
+          } else {
+            setClientIdMismatch(false);
+          }
+          
           console.log("✅ Order Number:", orderNumber);
           console.log("✅ Client ID from token:", clientIdFromToken);
+          console.log("✅ User Client ID:", user?.clientId);
         } catch (error) {
           console.error("❌ Decryption failed:", error);
           // Do not show encrypted txnid as order number.
@@ -178,15 +195,27 @@ export default function PaymentResult() {
     if (!loading && !statusUpdated && paymentData.encryptedTransactionId && hasValidOrderNumber) {
       const orderStatus = paymentData.status === "success" ? "PAID" : "FAILED";
 
-      // Use the decrypted order number (or fallback encrypted value) for the API call
+      // Send encrypted transaction ID to backend (do not decrypt)
       updateStatusMutation.mutate(
         {
-          orderNumber: decryptedOrderNumber,
+          orderNumber: paymentData.encryptedTransactionId,
           status: orderStatus,
         },
         {
-          onSuccess: () => {
+          onSuccess: (response) => {
+            // Mark that status update was attempted (API call succeeded)
             setStatusUpdated(true);
+            
+            // Set flag to force refetch in orders page
+            sessionStorage.setItem('justReturnedFromPayment', 'true');
+            
+            // Check if the response indicates actual success (not just API call success)
+            // Some APIs return success even when update fails, so we need to check the response
+            const isUpdateSuccessful = response && (response === 'success' || response === 'OK' || response === 'true');
+            setOrderStatusUpdateSuccess(!!isUpdateSuccessful);
+            
+            console.log("📝 Order status update response:", response);
+            console.log("📝 Order status update success:", isUpdateSuccessful);
 
             if (orderStatus === "PAID") {
               toast({
@@ -194,30 +223,19 @@ export default function PaymentResult() {
                 description: `Order #${decryptedOrderNumber} has been successfully placed.`,
               });
 
-              // Get client ID - first from decrypted token, then fallbacks
-              let clientId: string | null = decryptedClientId || null;
-              if (!clientId && user?.clientId) {
-                clientId = user.clientId;
-              } else if (!clientId) {
-                const authUserString = localStorage.getItem("authUser");
-                if (authUserString) {
-                  try {
-                    const authUser = JSON.parse(authUserString);
-                    clientId = authUser.clientId || null;
-                  } catch (parseError) {
-                    console.error("Failed to parse authUser:", parseError);
-                  }
-                }
-              }
+              // Use user?.clientId consistently - this is the authoritative source for orders
+              // Don't rely on decryptedClientId which might be inconsistent
+              const clientId = user?.clientId;
+              
+              console.log("🔑 Using clientId for coupon fetch:", clientId);
 
-              console.log("🔑 Client ID resolved:", clientId);
-
-              // Fetch coupons - but skip if no auth
-              if (clientId && !couponsFetched && decryptedOrderNumber) {
+              // Only fetch coupons if order status was actually updated successfully
+              // This prevents voucher generation when order status update fails
+              if (isUpdateSuccessful && clientId && !couponsFetched && paymentData.encryptedTransactionId) {
                 fetchCouponsMutation.mutate(
                   {
                     clientId: clientId,
-                    orderNumber: decryptedOrderNumber,
+                    orderNumber: paymentData.encryptedTransactionId,
                   },
                   {
                     onSuccess: () => {
@@ -238,6 +256,13 @@ export default function PaymentResult() {
                     },
                   }
                 );
+              } else if (!isUpdateSuccessful) {
+                console.warn("⚠️ Order status update returned failure, skipping coupon generation");
+                toast({
+                  title: "Order Processing",
+                  description: "Order is being processed. Vouchers will be available shortly.",
+                  variant: "default",
+                });
               }
             }
           },
@@ -246,6 +271,7 @@ export default function PaymentResult() {
             // Just show the payment result without updating status
             console.warn("Order status update failed:", error);
             setStatusUpdated(true); // Mark as updated to prevent retry
+            setOrderStatusUpdateSuccess(false); // Mark as failed
             
             if (paymentData.status === "success") {
               toast({
@@ -273,6 +299,8 @@ export default function PaymentResult() {
     decryptedClientId,
     couponsFetched,
     isDecrypted,
+    user?.clientId,
+    orderStatusUpdateSuccess,
   ]);
 
   // Status UI helpers
@@ -512,9 +540,13 @@ export default function PaymentResult() {
                   <Button
                     size="lg"
                     className="flex-1 h-12 text-base font-semibold shadow-md hover:shadow-lg transition-all"
-                    onClick={() => setLocation("/cart")}
+                    onClick={() => {
+                      // Set flag to force refetch in orders page
+                      sessionStorage.setItem('justReturnedFromPayment', 'true');
+                      setLocation("/orders");
+                    }}
                   >
-                    Back to Cart
+                    View Orders
                   </Button>
                   <Button
                     size="lg"

@@ -16,7 +16,6 @@ const queryClient = new QueryClient({
   },
 });
 console.log("ALL ENV:", import.meta.env);
-console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <App />

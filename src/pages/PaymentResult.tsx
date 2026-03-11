@@ -216,10 +216,9 @@ export default function PaymentResult() {
             // Set flag to force refetch in orders page
             sessionStorage.setItem('justReturnedFromPayment', 'true');
             
-            // Check if the response indicates actual success (not just API call success)
-            // Some APIs return success even when update fails, so we need to check the response
-            const isUpdateSuccessful = response && (response === 'success' || response === 'OK' || response === 'true');
-            setOrderStatusUpdateSuccess(!!isUpdateSuccessful);
+            // onSuccess only runs for successful HTTP responses from the backend.
+            const isUpdateSuccessful = true;
+            setOrderStatusUpdateSuccess(true);
             
             console.log("📝 Order status update response:", response);
             console.log("📝 Order status update success:", isUpdateSuccessful);

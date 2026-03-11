@@ -18,22 +18,6 @@ export default defineConfig({
     headers: {
       "Cache-Control": "no-cache, no-store, must-revalidate",
     },
-    proxy: {
-      "/api": {
-        target: "https://vdspbck.sabbpe.com",
-        changeOrigin: true,
-        secure: false,
-      },
-      "/auth": {
-        target: "https://vdspbck.sabbpe.com",
-        changeOrigin: true,
-        secure: false,
-      },
-      "/sabbpe": {
-        target: "https://vdspbck.sabbpe.com",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+   
   },
 });

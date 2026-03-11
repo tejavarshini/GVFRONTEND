@@ -1,9 +1,8 @@
 // components/CorporateContactModal.tsx
 // Corporate-specific contact modal with business registration and invoice upload
 import { useState } from 'react';
-import type { FormEvent, ChangeEvent } from 'react';
-import { X, CheckCircle, Building2, MapPin, Map, FileText, CreditCard, MessageSquare, Upload, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
+import type { FormEvent } from 'react';
+import { X, CheckCircle, Building2, MapPin, Map, FileText, CreditCard, MessageSquare, Loader2 } from 'lucide-react';
 import { submitContactLead } from '@/api/contactApi';
 
 interface CorporateContactModalProps {
@@ -18,8 +17,6 @@ export default function CorporateContactModal({
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>('');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     organizationName: '',
     city: '',
@@ -29,47 +26,12 @@ export default function CorporateContactModal({
     message: ''
   });
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      setUploadedFile(file);
-    }
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      let sampleInvoiceUrl = '';
-
-      // Upload file to Supabase Storage if provided
-      if (uploadedFile) {
-        const fileExt = uploadedFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `corporate-invoices/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('form-uploads')
-          .upload(filePath, uploadedFile);
-
-        if (uploadError) {
-          console.error('Error uploading file:', uploadError);
-          setError('Failed to upload invoice file. Please try again.');
-          setLoading(false);
-          return;
-        }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('form-uploads')
-          .getPublicUrl(filePath);
-
-        sampleInvoiceUrl = publicUrl;
-      }
-
       // Submit to backend API with role
       await submitContactLead({
         role: 'CORPORATE',
@@ -78,7 +40,6 @@ export default function CorporateContactModal({
         state: formData.state,
         pan: formData.pan,
         gst: formData.gst,
-        sampleInvoiceUrl: sampleInvoiceUrl,
         message: formData.message
       });
 
@@ -95,8 +56,6 @@ export default function CorporateContactModal({
     setSubmitted(false);
     setLoading(false);
     setError(null);
-    setFileName('');
-    setUploadedFile(null);
     setFormData({
       organizationName: '',
       city: '',
@@ -246,32 +205,6 @@ export default function CorporateContactModal({
                     placeholder="22AAAAA0000A1Z5"
                     maxLength={15}
                   />
-                </div>
-              </div>
-
-              {/* Upload Sample Proforma Invoice */}
-              <div>
-                <label htmlFor="invoice" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Upload Sample Proforma Invoice <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    id="invoice"
-                    required
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="invoice"
-                    className="flex items-center gap-3 w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg hover:border-purple-400 cursor-pointer transition-all bg-white"
-                  >
-                    <Upload className="absolute left-3 h-5 w-5 text-gray-400" />
-                    <span className="text-sm text-gray-600 truncate">
-                      {fileName || 'Choose file (PDF, DOC, XLS)'}
-                    </span>
-                  </label>
                 </div>
               </div>
 
